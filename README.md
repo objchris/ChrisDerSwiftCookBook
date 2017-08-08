@@ -20,7 +20,7 @@ Swift中的整数是怎样表示的？
 
 #### Solution
 
-Int、Uint
+Int、Uint 
 
 #### Discusstion
 
@@ -83,3 +83,33 @@ Swift中的浮点数是怎样表示的？
 
 #### Discussion
 
+最常见的是HTTP状态码 👉 404 对应 Page Not Found
+
+`let http404Error = (404, "Not Found")`
+
+在分解的时候可以分解成变量
+
+```
+let (statusCode, statusMessage) = http404Error
+statusCode
+statusMessage
+```
+
+或者，通过下标数字去读取
+
+`http404Error.0 `
+
+也可以在定义元祖的时候就给其中的元素命名
+
+`let http200Status = (statusCode: 200, description: "OK")`
+
+使用时通过名字来获取
+
+```
+http200Status.statusCode
+http200Status.description
+```
+
+作为函数返回值，直接定义就好了
+
+`func networkStatus() -> (Int, String) `
