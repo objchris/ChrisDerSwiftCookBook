@@ -6,7 +6,7 @@ Base on Swift Version 3.1
 
 主要记录Swift学习过程中遇到的可能一时间难以记住的语法。可能会连带补充一些《The Swift Programming Language》中没有的内容。
 
-作为Xcode代码段方便以后开发
+以Cookbook的形式书写，作为Xcode代码段方便以后开发。
 
 
 
@@ -113,3 +113,45 @@ http200Status.description
 作为函数返回值，直接定义就好了
 
 `func networkStatus() -> (Int, String) `
+
+------
+
+### 可选类型(Optional)
+
+#### Problem
+
+什么是可选类型，怎么用好可选类型？
+
+#### Solution
+
+可选类型用来处理值缺失的情况，在定义类型的时候在类型后加上? (表示可选类型) 或 ! (表示隐式解析可选类型)
+
+#### Discusstion
+
+Swift中任何类型都可以被定义成Optional，在使用中可以将该值赋为nil。     
+
+不同于OC的是，nil在Swift中是一个确定的值，代表值缺失，因此可用于任何类型。而OC是将nil作为指向不存在对象的指针，只能用于对象。     
+
+不是Optional的类型不能被赋nil值。    
+
+在`if` 和`while`中可以使用let来判断一个可选类型是否包含值，并将该值存到一个临时变量中：
+
+```
+let possibleNumber = "123"
+if let actualNumber = Int(possibleNumber) {
+    print("\(actualNumber) is an integer")
+} else {
+    print("\'\(possibleNumber)\' could not be converted to an integer")
+}
+```
+
+使用可选类型时，需要保证其不为空，除了上述的“可选绑定”方式外，若你确定其不为空，可以直接使用 ! 来获取值：`print("\(possibleNumber!) is an integer")`
+
+! 不仅可以用来解析 ? 声明的可选类型，还可以用来声明隐式解析可选类型。     
+
+隐式解析可选类型在第一次赋值确定之后一定有值的时候，使用其不需要再在变量或常量后面加上 ! ，但是需要特别注意的是，一定要确保有值，不然会得到运行时错误。
+
+String 和 String! 的区别：
+
+------
+
