@@ -155,4 +155,21 @@ String 和 String! 的区别：
 
 ------
 
-错误处理
+###错误处理
+
+####Problem
+
+在Swift中如何抛出错误，如何捕获错误？
+
+####Solution
+
+```
+do {
+  try somethingMayThrowError
+} catch {
+  
+}
+```
+
+####Discussion
+
