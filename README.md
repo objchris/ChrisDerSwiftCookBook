@@ -151,8 +151,6 @@ if let actualNumber = Int(possibleNumber) {
 
 隐式解析可选类型在第一次赋值确定之后一定有值的时候，使用其不需要再在变量或常量后面加上 ! ，但是需要特别注意的是，一定要确保有值，不然会得到运行时错误。
 
-String 和 String! 的区别：
-
 ------
 
 ###错误处理
@@ -167,9 +165,22 @@ String 和 String! 的区别：
 do {
   try somethingMayThrowError
 } catch {
-  
+  // 抛出错误时进行处理
 }
 ```
 
 ####Discussion
+
+`somethingMayThrowError`是符合`Error`协议的类型。
+
+将错误类型定义为enum是最好不过的了。Swift的enum可以支持带参数的case。这样对于相同类型的case就可以通过参数更进一步地区分。
+
+- Code Snippets
+
+```
+enum <#ErrorTitle#> : Error {
+    case <#TypeWithNoParam#>
+    case <#TypeWithParam#>(<#ParamName#>: <#ParamType#>)
+}
+```
 
