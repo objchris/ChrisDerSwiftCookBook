@@ -6,7 +6,7 @@ Base on Swift Version 3.1
 
 主要记录Swift学习过程中遇到的可能一时间难以记住的语法。可能会连带补充一些《The Swift Programming Language》中没有的内容。
 
-以Cookbook的形式书写，作为Xcode代码段方便以后开发。
+以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便以后开发。
 
 
 
@@ -175,7 +175,7 @@ do {
 
 将错误类型定义为enum是最好不过的了。Swift的enum可以支持带参数的case。这样对于相同类型的case就可以通过参数更进一步地区分。
 
-- Code Snippets
+- Code Snippets 🥐
 
 ```
 enum <#ErrorTitle#> : Error {
