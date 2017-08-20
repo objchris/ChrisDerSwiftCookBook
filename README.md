@@ -2,11 +2,11 @@
 
 从头学Swift的读书笔记
 
-Base on Swift Version 3.1
+Base on 《The Swift Programming Language》 Version 3.1 
 
 主要记录Swift学习过程中遇到的可能一时间难以记住的语法。可能会连带补充一些《The Swift Programming Language》中没有的内容。
 
-以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便以后开发。
+以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便开发使用。
 
 
 
@@ -30,7 +30,7 @@ Int、Uint
 
 可以通过min和max得到该类型所能达到的最小最大值
 
-```
+```swift
 let minValue = UInt8.min	// 0
 let maxValue = UInt8.max	// 255
 ```
@@ -89,7 +89,7 @@ Swift中的浮点数是怎样表示的？
 
 在分解的时候可以分解成变量
 
-```
+```swift
 let (statusCode, statusMessage) = http404Error
 statusCode
 statusMessage
@@ -105,7 +105,7 @@ statusMessage
 
 使用时通过名字来获取
 
-```
+```swift
 http200Status.statusCode
 http200Status.description
 ```
@@ -136,7 +136,7 @@ Swift中任何类型都可以被定义成Optional，在使用中可以将该值�
 
 在`if` 和`while`中可以使用let来判断一个可选类型是否包含值，并将该值存到一个临时变量中：
 
-```
+```swift
 let possibleNumber = "123"
 if let actualNumber = Int(possibleNumber) {
     print("\(actualNumber) is an integer")
@@ -161,7 +161,7 @@ if let actualNumber = Int(possibleNumber) {
 
 #### Solution
 
-```
+```swift
 do {
   try somethingMayThrowError
 } catch {
@@ -177,10 +177,83 @@ do {
 
 - Code Snippets 🥐
 
-```
+```swift
 enum <#ErrorTitle#> : Error {
     case <#TypeWithNoParam#>
     case <#TypeWithParam#>(<#ParamName#>: <#ParamType#>)
+}
+```
+
+要么使用`do-catch`对函数判处的错误进行捕捉处理，要么将这些错误继续传递下去（函数名添加throws，使用try继续传递）
+
+当构造函数（init）有可能发生错误时，应该在init函数中将错误抛出，由该构造函数的调用者去决定如何解决错误。
+
+```swift
+init(name: String) throws {
+  ...
+}
+```
+
+> catch子句不必将do子句中的代码所抛出的每一个可能的错误都作处理。如果所有catch子句都未处理错误，错误就会传递到周围的作用域。然而，错误还是必须要被某个周围的作用域处理的。
+
+- Code Snippets 🥐
+
+```swift
+do {
+    try <#expression#>
+    <#statements#>
+} catch <#pattern 1#> {
+    <#statements#>
+} catch <#pattern 2#> {
+    <#statements#>
+} catch <#pattern 3#> where <#condition#> {
+    <#statements#>
+} catch {
+    <#statements#>
+}
+```
+
+即使我们在编写代码的过程中知道`try`后面的函数只会抛出某一类Error，但是`do-catch`还是需要捕获全部错误，包括自己定义的和所有其他的错误。所以上面的Code Snippets 在最后加上了无匹配模式的`catch`。
+
+可以为`catch`加`where`条件来决定是否捕获这个错误。
+
+**如果函数没有`throws`标识符，且其中的`do-catch`不捕获或少捕获错误，会导致编译时不通过。**
+
+`try? `可将函数的返回值类型变成对应可选类型，用这种方式来处理错误会让代码看起来更简洁（以下`x`和`y`等价）：
+
+```swift
+func someThrowingFunction() throws -> Int {
+    // ...
+}
+let x = try? someThrowingFunction()
+let y: Int?
+do {
+    y = try someThrowingFunction()
+} catch {
+    y = nil
+}
+```
+
+`try!`用于断言运行时不会有错误抛出，因此也不需要处理错误。
+
+相当于Java中的Finally语句，在Swift中可以使用`defer`在即将离开当前代码块时执行一系列语句（用于释放资源或记录日志）。若有多个`defer`代码块，则按照被指定的顺序的相反顺序执行。
+
+```swift
+func processFile(filename: String) throws {
+    if exists(filename) {
+        let file = open(filename)
+        defer {
+            print("invoked after")
+            close(file)
+        }
+        defer {
+          	print("invoked first")
+        }
+        while let line = try file.readline() {
+            // 处理文件。
+        }
+      	// 两个defer会在这里被调用
+    }
 }
 ```
 
