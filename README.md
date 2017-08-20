@@ -153,13 +153,13 @@ if let actualNumber = Int(possibleNumber) {
 
 ------
 
-###错误处理
+### 错误处理
 
-####Problem
+#### Problem
 
 在Swift中如何抛出错误，如何捕获错误？
 
-####Solution
+#### Solution
 
 ```
 do {
@@ -169,7 +169,7 @@ do {
 }
 ```
 
-####Discussion
+#### Discussion
 
 `somethingMayThrowError`是符合`Error`协议的类型。
 
