@@ -75,17 +75,90 @@ Swift中的浮点数是怎样表示的？
 
 #### Problem
 
-
+Swift中的字符串和字符是怎么表示的？
 
 #### Solution
 
-
+String、Character
 
 #### Discusstion
 
+String类型是值类型，因此在对其进行常量、变量赋值操作，或在函数中传递时，会进行值拷贝而不是地址传递。
 
+使用`String.characters`可以获得字符串中每个字符。
+
+String之间可以使用`+`连接，而String和Character之间需要对Character做转换：
+
+```Swift
+let c: Character = "C"
+var s: String = "string"
+s.append(c)
+// or
+s += String(c)
+```
+
+String不仅重载了`+`，还重载了`+=`、`<`、`==`，比较两个字符串直接使用`==`，只要有同样的语义和外观，就认为是相同的。
+
+String与NSString进行了无缝桥接，在String中调用NSString的方法不需要进行转换。
 
 ------
+
+### 遍历字符串
+
+#### Problem
+
+怎么遍历字符串，怎么取出特定下标的字符？
+
+#### Solution
+
+使用String.index
+
+#### Discussion
+
+String和Character都是完全兼容Unicode标准的，而Character代表一个可扩展的字形群，可以通过组合不同的Unicode标量来获得另外一个Unicode标量，如（下面两个变量的值都是é）：
+
+```swift
+let eAcute: Character = "\u{E9}"      			 // é
+let combinedEAcute: Character = "\u{65}\u{301}"  // e后面加上 ́
+```
+
+因此用`String.character.count`才能准确获得String中有多少个字符（上面两个变量都是1），而`String.length`实际上是调用`String.utf16Count`计算的是有多少个Unicode标量，即上面两个变量一个是1，另一个是2。因此，获取字符串的长度应该是`String.characters.count`。
+
+综上得知，要知道Character的确定位置，就必须从String开头遍历每一个 Unicode 标量直到结尾。因此，Swift 的字符串不能用整数(integer)做索引。
+
+两种方法获得索引：
+
+- String对象的变量：`string.startIndex`、`string.endIndex`**注意：endIndex是String对象的最后一个字符的后面那个索引，所以千万不要s[s.endIndex]**
+- 使用String对象的方法，调用`index(before:)`、`index(after:)`、`index(_:offsetBy:)`、`index(_:offsetBy:limitedBy:)`等函数。**这几个函数可在任何遵循Collection协议的类型中看到**
+- 使用`string.character.indices`获取所有索引的Range。
+
+```swift
+for index in string.character.indices {
+  ...
+}
+```
+
+得到索引后，像使用Int一样使用`s[index]`。
+
+------
+
+### 插入和删除字符或字符串
+
+#### Problem
+
+如何在Swift中插入和删除字符或字符串？
+
+#### Solution
+
+insert(\_:at:)插入字符、insert(contentsOf:at:)插入字符串
+
+remove(at:)删除字符、removeSubrange(\_:)删除子字符串
+
+#### Discussion
+
+可以在任意一个确认的并遵循 RangeReplaceableCollection 协议的类型里面使用 `insert(_:at:)`、`insert(contentsOf:at:)`、`remove(at:)` 和 `removeSubrange(_:)` 方法。
+
+---
 
 ### 元祖(Tuples)
 
