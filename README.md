@@ -2,7 +2,7 @@
 
 从头学Swift的读书笔记
 
-Base on 《The Swift Programming Language》 Version 3.1 
+Now base on 《The Swift Programming Language》 Version 3.1 
 
 主要记录Swift学习过程中遇到的可能一时间难以记住的语法。可能会连带补充一些《The Swift Programming Language》中没有的内容。
 
@@ -68,6 +68,22 @@ Swift中的浮点数是怎样表示的？
 `0xFp-2` 表示 15 × 2^-2，等于 `3.75`。
 
 注：`1.25p2`会得到编译错误~
+
+------
+
+### 字符串和字符
+
+#### Problem
+
+
+
+#### Solution
+
+
+
+#### Discusstion
+
+
 
 ------
 
@@ -151,7 +167,46 @@ if let actualNumber = Int(possibleNumber) {
 
 隐式解析可选类型在第一次赋值确定之后一定有值的时候，使用其不需要再在变量或常量后面加上 ! ，但是需要特别注意的是，一定要确保有值，不然会得到运行时错误。
 
+在可选类型后加上空白运算符`??`将对可选类型进行空判断，若该值为nil，则返回`??`后跟上的默认值：
+
+```Swift
+let value = mayBeNil ?? defaultValue
+// 等同于
+let value = (mayBeNil != nil) ? mayBeNil! : defaultValue
+```
+
 ------
+
+### 逻辑运算符
+
+#### Problem
+
+逻辑运算符以及组合运算
+
+#### Solution
+
+逻辑运算符有`!`、 `&&`、 `||`三种，分别代表逻辑非、逻辑与、逻辑或。
+
+#### Discusstion
+
+一元逻辑运算符`!`直接放在布尔型变量前，表示取反。
+
+二元逻辑运算符`&&`和`||`是组合两个布尔型变量，根据这两个布尔型变量的值来决定语句是否为`true`。这两个运算符都是「**短路计算**」的，也就是说：当运算符前的值已经可以决定整个语句的是否为`true`时，将不再计算运算符后面的值。
+
+可以将多个逻辑运算符组合起来使用，需要注意的是：
+
+ Swift 逻辑操作符 && 和 || 是左结合的，这意味着拥有多元逻辑操作符的复合表达式优先计算最左边的子表达式。
+
+```Swift
+if condition1 && condition2 || condition3 || condition4 {
+    statements
+}
+//当condition1 && condition2 为 true，或condition3为true，或condition4为true，statements才会被执行。
+```
+
+所以，多个逻辑运算符组合起来使用，最好使用括号来明确优先级。
+
+## 较复杂部分
 
 ### 错误处理
 
@@ -236,7 +291,7 @@ do {
 
 `try!`用于断言运行时不会有错误抛出，因此也不需要处理错误。
 
-相当于Java中的Finally语句，在Swift中可以使用`defer`在即将离开当前代码块时执行一系列语句（用于释放资源或记录日志）。若有多个`defer`代码块，则按照被指定的顺序的相反顺序执行。
+相当于Java中的Finally语句，在Swift中可以使用`defer`在即将离开当前代码块时执行一系列语句（用于释放资源或记录日志等）。若有多个`defer`代码块，则按照被指定的顺序的相反顺序执行。
 
 ```swift
 func processFile(filename: String) throws {
@@ -247,7 +302,7 @@ func processFile(filename: String) throws {
             close(file)
         }
         defer {
-          	print("invoked first")
+        	print("invoked first")
         }
         while let line = try file.readline() {
             // 处理文件。
