@@ -118,7 +118,7 @@ String与NSString进行了无缝桥接，在String中调用NSString的方法不�
 String和Character都是完全兼容Unicode标准的，而Character代表一个可扩展的字形群，可以通过组合不同的Unicode标量来获得另外一个Unicode标量，如（下面两个变量的值都是é）：
 
 ```swift
-let eAcute: Character = "\u{E9}"      			 // é
+let eAcute: Character = "\u{E9}"  // é
 let combinedEAcute: Character = "\u{65}\u{301}"  // e后面加上 ́
 ```
 
@@ -126,7 +126,7 @@ let combinedEAcute: Character = "\u{65}\u{301}"  // e后面加上 ́
 
 综上得知，要知道Character的确定位置，就必须从String开头遍历每一个 Unicode 标量直到结尾。因此，Swift 的字符串不能用整数(integer)做索引。
 
-两种方法获得索引：
+三种方法获得索引：
 
 - String对象的变量：`string.startIndex`、`string.endIndex`**注意：endIndex是String对象的最后一个字符的后面那个索引，所以千万不要s[s.endIndex]**
 - 使用String对象的方法，调用`index(before:)`、`index(after:)`、`index(_:offsetBy:)`、`index(_:offsetBy:limitedBy:)`等函数。**这几个函数可在任何遵循Collection协议的类型中看到**
@@ -138,7 +138,7 @@ for index in string.character.indices {
 }
 ```
 
-得到索引后，像使用Int一样使用`s[index]`。
+得到索引后，像其他语言的数组使用Int索引一样使用String的Index：`s[index]`。
 
 ------
 
