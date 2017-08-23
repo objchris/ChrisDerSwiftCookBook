@@ -10,7 +10,7 @@ Now base on 《The Swift Programming Language》 Version 3.1
 
 
 
-## 基础部分
+## 基本数据类型
 
 ### 整数
 
@@ -160,6 +160,95 @@ remove(at:)删除字符、removeSubrange(\_:)删除子字符串
 
 ---
 
+### 逻辑运算符
+
+#### Problem
+
+逻辑运算符以及组合运算
+
+#### Solution
+
+逻辑运算符有`!`、 `&&`、 `||`三种，分别代表逻辑非、逻辑与、逻辑或。
+
+#### Discusstion
+
+一元逻辑运算符`!`直接放在布尔型变量前，表示取反。
+
+二元逻辑运算符`&&`和`||`是组合两个布尔型变量，根据这两个布尔型变量的值来决定语句是否为`true`。这两个运算符都是「**短路计算**」的，也就是说：当运算符前的值已经可以决定整个语句的是否为`true`时，将不再计算运算符后面的值。
+
+可以将多个逻辑运算符组合起来使用，需要注意的是：
+
+ Swift 逻辑操作符 && 和 || 是左结合的，这意味着拥有多元逻辑操作符的复合表达式优先计算最左边的子表达式。
+
+```swift
+if condition1 && condition2 || condition3 || condition4 {
+    statements
+}
+//当condition1 && condition2 为 true，或condition3为true，或condition4为true，statements才会被执行。
+```
+
+所以，多个逻辑运算符组合起来使用，最好使用括号来明确优先级。
+
+## 集合类型
+
+### 数组
+
+#### Problem
+
+Swift中如何表示一个数组？有什么特性？
+
+#### Solution
+
+Array，若是分配给变量(`var`修饰)，则可以添加、删除、更改数组中的项。若是分配给常量(`let`修饰)，则大小和内容都不能改变。对应着OC中的NSMutableArray和NSArray。
+
+#### Discussion
+
+数组使用`Array[Element]`或`[Element]`来创建，将它们看做是一种数据类型，所以在创建的时候都需要在类型后加上`()`，如
+
+```swift
+let arrayA = Array[Int]()
+let arrayB = [Int]()
+```
+
+因为Swift有类型推断机制，所以使用Array(repeating:count:)时，Swift会根据repeating的类型来决定Array中存储的数据项的类型。
+
+像OC中提倡使用字面量`@[]`一般，Swift中同样可以使用字面量来定义数组：
+
+```swift
+let arrayC = [1,2,3,4,5]
+```
+
+访问数组：
+
+- 相对于String来说比较简单，通过**Int型索引**可以获取到数组中对应位置的值。
+- 通过只读`count`获取数组的项的数量。
+- 通过`isEmpty`检查数组的项数量是否为0。
+- 使用`for-in`来遍历数组中所有的项，或者利用`enumerated()`来获取索引和值组成的元祖。
+
+```swift
+for (index, value) in arrayC. enumerated() {
+    print("Item \(String(index + 1)): \(String(value))")
+}
+```
+
+修改数组：
+
+- 像String一样，可以使用`+`来连接两个数组，`+=`也被重载了。
+- 用`append(_:)`在数组末尾添加新的数据项。
+- 使用下标来改变某个已有索引值对应的数据值，也可改变一系列数据值
+
+```Swift
+arrayC[0] = 2 // 此时arrayC中的项为[2,2,3,4,5]
+arrayC[2...4] = [6]	// 此时arrayC中的项为[1,2,6]
+```
+
+- `insert(_:at:)`在某个**具体索引前**添加数据。
+- `remove(at_)`**删除并返回**某个索引对应的数据项，后面的项往前移动。
+
+关于Array到NSArray的桥接，未完待续。
+
+## Swift特性
+
 ### 元祖(Tuples)
 
 #### Problem
@@ -242,42 +331,13 @@ if let actualNumber = Int(possibleNumber) {
 
 在可选类型后加上空白运算符`??`将对可选类型进行空判断，若该值为nil，则返回`??`后跟上的默认值：
 
-```Swift
+```swift
 let value = mayBeNil ?? defaultValue
 // 等同于
 let value = (mayBeNil != nil) ? mayBeNil! : defaultValue
 ```
 
-------
 
-### 逻辑运算符
-
-#### Problem
-
-逻辑运算符以及组合运算
-
-#### Solution
-
-逻辑运算符有`!`、 `&&`、 `||`三种，分别代表逻辑非、逻辑与、逻辑或。
-
-#### Discusstion
-
-一元逻辑运算符`!`直接放在布尔型变量前，表示取反。
-
-二元逻辑运算符`&&`和`||`是组合两个布尔型变量，根据这两个布尔型变量的值来决定语句是否为`true`。这两个运算符都是「**短路计算**」的，也就是说：当运算符前的值已经可以决定整个语句的是否为`true`时，将不再计算运算符后面的值。
-
-可以将多个逻辑运算符组合起来使用，需要注意的是：
-
- Swift 逻辑操作符 && 和 || 是左结合的，这意味着拥有多元逻辑操作符的复合表达式优先计算最左边的子表达式。
-
-```Swift
-if condition1 && condition2 || condition3 || condition4 {
-    statements
-}
-//当condition1 && condition2 为 true，或condition3为true，或condition4为true，statements才会被执行。
-```
-
-所以，多个逻辑运算符组合起来使用，最好使用括号来明确优先级。
 
 ## 较复杂部分
 
