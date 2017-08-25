@@ -191,7 +191,7 @@ if condition1 && condition2 || condition3 || condition4 {
 
 ## 集合类型
 
-### 数组
+### 数组（Array）
 
 #### Problem
 
@@ -226,7 +226,10 @@ let arrayC = [1,2,3,4,5]
 - 使用`for-in`来遍历数组中所有的项，或者利用`enumerated()`来获取索引和值组成的元祖。
 
 ```swift
-for (index, value) in arrayC. enumerated() {
+for i in arrayC {
+    print("\(i)")
+}
+for (index, value) in arrayC.enumerated() {
     print("Item \(String(index + 1)): \(String(value))")
 }
 ```
@@ -246,6 +249,148 @@ arrayC[2...4] = [6]	// 此时arrayC中的项为[1,2,6]
 - `remove(at_)`**删除并返回**某个索引对应的数据项，后面的项往前移动。
 
 关于Array到NSArray的桥接，未完待续。
+
+---
+
+### 集合（Set）
+
+#### Problem
+
+Swift中如何表示一个集合？有什么特性？
+
+#### Solution
+
+集合(Set)用来存储相同类型并且没有确定顺序的值。当集合元素顺序不重要时或者希望确保每个元素只出现一次时可以使用集合。
+
+#### Discussion
+
+集合是通过Hash来确定一个值当前是否存储在其中。所以为了存储在集合中，该类型必须遵循`Hashable`协议。`Hashable`是一个`Protocal`，其中只有一个计算属性`hashValue`，用于返回计算后的哈希值。要选择一个对类型中包含的属性来说较为合适的哈希算法。见  **如何选取好的Hash算法**  
+
+再者`Hashable`是符合`Equatable`协议的。所以必须重载`==`来告诉`Set`（或下面将提到的`Dictionary`），如何判断两个元素是相同的。
+
+当你将没有遵循`Hashable`协议的类型加入到`Set`中，将会得到运行错误。
+
+总的来说，看下面的例子：
+
+```Swift
+// A point in an x-y coordinate system.
+struct GridPoint {
+	var x: Int
+	var y: Int
+}
+// 若要在Set中保存，或需要作为Dictionary的Key
+extension GridPoint: Hashable {
+	var hashValue: Int {
+	     return x.hashValue ^ y.hashValue &* 16777619
+	}
+
+	static func == (lhs: GridPoint, rhs: GridPoint) -> Bool {
+		return lhs.x == rhs.x && lhs.y == rhs.y
+	}
+}
+```
+
+定义集合类型只能用`Set<Element>`，`Element`表示`Set`中存储的类型。
+
+像`Array`一般，我们可以使用字面量来构造一个`Set`，但需要注意的是：在定义的时候需要显式指定变量或常量为`Set<Element>`，否则会被认为是数组。
+
+```Swift
+var pointsSet: Set<GridPoint> = [GridPoint(x: 1,y: 1),GridPoint(x: 2,y: 2)]
+```
+
+对`Set`的操作和函数基本与`Array`相似。但是`Set`是没有确定的顺序的，可以使用`sorted()`方法对`Set`进行排序，顺序由`<`对元素进行比较的结果确定。
+
+使用`contains(_:)`检查`Set`中是否包含一个特定的值。
+
+```swift
+if pointsSet.contains(GridPoint(x: 1,y: 1)) {
+	print("Yeah! I got a point")
+}
+```
+
+关于Set到NSSet的桥接，未完待续。
+
+### 集合的组合操作
+
+#### Problem
+
+当我要对两个集合进行操作，取共同拥有的交集，取某一个集合相对于另一个集合的补集，或者取两个集合各自拥有的元素再组合成一个集合，应该怎么办？
+
+#### Solution
+
+![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/setVennDiagram_2x.png)
+
+#### Discussion
+
+- 使用`intersection(_:)`方法根据两个集合中都包含的值创建的一个新的集合。
+- 使用`symmetricDifference(_:)`方法根据在一个集合中但不在两个集合中的值创建一个新的集合。
+- 使用`union(_:)`方法根据两个集合的值创建一个新的集合。
+- 使用`subtracting(_:)`方法根据不在该集合中的值创建一个新的集合。
+
+```Swift
+let oddDigits: Set = [1, 3, 5, 7, 9]
+let evenDigits: Set = [0, 2, 4, 6, 8]
+let singleDigitPrimeNumbers: Set = [2, 3, 5, 7]
+ 
+oddDigits.union(evenDigits).sort()
+// [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+oddDigits.intersection(evenDigits).sorted()
+// []
+oddDigits.subtracting(singleDigitPrimeNumbers).sorted()
+// [1, 9]
+oddDigits. symmetricDifference(singleDigitPrimeNumbers).sorted()
+// [1, 2, 9]
+```
+
+### 集合间关系
+
+#### Problem
+
+如何确定两个集合是相等、包含、严格包含、部分包含？
+
+#### Solution
+
+![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/setEulerDiagram_2x.png)
+
+```swift
+b.isSubset(of:a)		//true
+a.isSuperset(of:b)		//true
+b.isDisjoint(with:c)	//true
+```
+
+#### Discussion
+
+- 使用运算符`==`来判断两个集合是否包含全部相同的值。
+- 使用`isSubset(of:)`或`isSuperset(of:)`方法来判断一个集合是否是另外一个集合的子集或父集。一个集合对自己调用`isSubset(of:)`结果为`true`。
+- 使用`isStrictSubset(of:)`或者`isStrictSuperset(of:)`方法来判断一个集合是否是另外一个集合的子集合或者父集合并且两个集合并不相等。一个集合对自己调用`isStrictSubset(of:)`永远是`false`。
+- 使用`isDisjoint(with:)`方法来判断两个集合是否不含有相同的值(是否没有交集)。
+- 上述Solution中，若要判断部分包含（即a和c的关系），可以将集合间的组合操作和集合间的关系合起来。
+
+```swift
+a.isSuperset(of:a.intersetion(c))	//为true则部分包含，为false则完全不包含
+```
+
+---
+
+### 字典
+
+#### Problem
+
+#### Solution
+
+#### Discussion
+
+`Dictionary`的键同`Set`中的值，遵循`Hashable`协议
+
+---
+
+### 如何选取好的Hash算法
+
+#### Problem
+
+#### Solution
+
+#### Discussion
 
 ## Swift特性
 
