@@ -199,7 +199,7 @@ Swift中如何表示一个数组？有什么特性？
 
 #### Solution
 
-Array，若是分配给变量(`var`修饰)，则可以添加、删除、更改数组中的项。若是分配给常量(`let`修饰)，则大小和内容都不能改变。对应着OC中的NSMutableArray和NSArray。
+Array，若是分配给变量(`var`修饰)，则可以添加、删除、更改数组中的项。若是分配给常量(`let`修饰)，则大小和内容都不能改变。
 
 #### Discussion
 
@@ -353,8 +353,8 @@ oddDigits. symmetricDifference(singleDigitPrimeNumbers).sorted()
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/setEulerDiagram_2x.png)
 
 ```swift
-b.isSubset(of:a)		//true
-a.isSuperset(of:b)		//true
+b.isSubset(of:a)	//true
+a.isSuperset(of:b)	//true
 b.isDisjoint(with:c)	//true
 ```
 
@@ -367,7 +367,7 @@ b.isDisjoint(with:c)	//true
 - 上述Solution中，若要判断部分包含（即a和c的关系），可以将集合间的组合操作和集合间的关系合起来。
 
 ```swift
-a.isSuperset(of:a.intersetion(c))	//为true则部分包含，为false则完全不包含
+a.isSuperset(of:a.intersection(c))	//为true则部分包含，为false则完全不包含
 ```
 
 ---
@@ -376,11 +376,43 @@ a.isSuperset(of:a.intersetion(c))	//为true则部分包含，为false则完全�
 
 #### Problem
 
+Swift中如何表示一个字典？有什么特性？
+
 #### Solution
+
+字典`Dictionary`是键值对，是一种存储多个相同类型的值的容器。可以通过键来得到存储在字典中的值。
 
 #### Discussion
 
-`Dictionary`的键同`Set`中的值，遵循`Hashable`协议
+- Swift中的字典使用`Dictionary<Key, Value>`定义。
+- 可以使用`[Key:Value]`的形式创建一个字典对象。
+- 和`Array`一样，我们可以使用字面量来构造字典。
+
+```Swift
+let dic1 = Dictionary<String, Int>()
+let dic2 = [Int: String]()
+var dic3 = [1:"string1",2:"string2",3:"string3"]
+```
+
+`Dictionary`的键`Key`同`Set`中的值，遵循`Hashable`协议。字典中的键是唯一的。
+
+对`Dictionary`的操作和函数基本与`Array`相似。使用属性`count`获取字典中的数据项数量，使用属性`isEmpty`检查是否数据项是否为0。
+
+不同于`Array`使用Int下标，`Dictionary`通过`Key`来获取或修改对应的值。除了用`[]`来修改值之外，若想在修改的同时获取修改前的旧值，可以使用`updateVale(_:forKey:)`，该函数会返回`String?`，若有旧值则返回，没有返回nil，`updateVale(_:forKey:)`在字典中添加该数据项。
+
+```Swift
+dic3[1] = "string that change"	// 上文定义dic3的时候使用var，所以dic3才可以添加删除修改元素
+let stringThatChange = dic3.updateValue("string that change", forKey:1)		//stringThatChange 是 String?
+if let result = dic3[1]	{	// 要注意： result 是 String?
+	...
+}
+```
+
+删除元素可以使用`removeValue(forKey:)`，该方法返回被移除的值或不存在值的时候返回`nil`。
+
+像`Array`中的每一项可以以`(Index, Value)`元祖的形式返回，`Dictionary`中的每一项都可以以`(Key, Value)`元祖的形式返回。
+
+若只需使用字典的键或值，可以使用属性`keys`或`values`来单独获取。
 
 ---
 
@@ -437,7 +469,7 @@ http200Status.description
 
 `func networkStatus() -> (Int, String) `
 
-------
+---
 
 ### 可选类型(Optional)
 
@@ -480,6 +512,63 @@ if let actualNumber = Int(possibleNumber) {
 let value = mayBeNil ?? defaultValue
 // 等同于
 let value = (mayBeNil != nil) ? mayBeNil! : defaultValue
+```
+
+---
+
+### Switch 
+
+#### Problem
+
+Swift中的`switch`与其他语言不同在哪？
+
+#### Solution
+
+不需要在`switch`中的每一个`case`后添加`break`，且`case`分支的模式可以是值的区间。
+
+#### Discussion
+
+当我们在C/C++、Java等语言中使用`switch`的时候，在每一个`case`中都需要添加`break`来什么分支结束，否则就会继续往下一个分支执行。
+
+在Swfit中，我们不再需要为每一个`case`添加`break`了，当匹配的`case`分支中的代码执行完毕后，程序会终止`switch`语句，不存在隐式的贯穿。
+
+当然，不排除有些时候我们需要贯穿，如
+
+```swift
+switch condition {
+	case A : 
+  		代码段A
+	case B : 
+  		代码段A
+  		代码段B
+}
+```
+
+这样写固然可以，但是可以使用`fallthrough`合起来写
+
+```
+switch condition {
+	case A : 
+		代码段A 
+		fallthrough
+	case B : 
+		代码段B
+}
+```
+
+`case`分支的模式可以是一个区间，区间可以简写为`1...5`表示1到5的所有数字，`1..<5`表示1到4的所有数字，因此
+
+```Swift
+case 1...5
+case 1..<5
+```
+
+`case`分支的模式可以是元祖
+
+```swift
+case (0, 0)	// 匹配二元元祖的两个元素
+case (_, 0)	// 匹配二元元祖的第二个元素
+case (0...5, 0..<5)	// 在元祖中使用区间
 ```
 
 
