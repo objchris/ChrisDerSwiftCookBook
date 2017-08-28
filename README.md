@@ -8,21 +8,23 @@ Now base on 《The Swift Programming Language》 Version 3.1
 
 以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便开发使用。
 
+---
 
+[TOC]
 
 ## 基本数据类型
 
 ### 整数
 
-#### Problem
+**Problem**
 
 Swift中的整数是怎样表示的？
 
-#### Solution
+**Solution**
 
 Int、Uint 
 
-#### Discusstion
+**Discusstion**
 
 跟C的命名方式类似，比如8位无符号整数类型是`UInt8`，32位有符号整数类型是 `Int32 `。
 
@@ -41,17 +43,17 @@ let maxValue = UInt8.max	// 255
 
 ### 浮点数
 
-#### Problem
+**Problem**
 
 Swift中的浮点数是怎样表示的？
 
-#### Solution
+**Solution**
 
 使用Float和Double来表示浮点数类型，如不是明确需求，使用Double作为日常开发使用，表示的精度会更加精确些。
 
 如果有需要使用到指数形式表示，二进制和十六进制分别使用e和p。
 
-#### Discussion
+**Discussion**
 
 - Float : 表示六位精度的浮点数
 - Double : 表示十五位以上精度的浮点数
@@ -73,15 +75,15 @@ Swift中的浮点数是怎样表示的？
 
 ### 字符串和字符
 
-#### Problem
+**Problem**
 
 Swift中的字符串和字符是怎么表示的？
 
-#### Solution
+**Solution**
 
 String、Character
 
-#### Discusstion
+**Discusstion**
 
 String类型是值类型，因此在对其进行常量、变量赋值操作，或在函数中传递时，会进行值拷贝而不是地址传递。
 
@@ -105,15 +107,15 @@ String与NSString进行了无缝桥接，在String中调用NSString的方法不�
 
 ### 遍历字符串
 
-#### Problem
+**Problem**
 
 怎么遍历字符串，怎么取出特定下标的字符？
 
-#### Solution
+**Solution**
 
 使用String.index
 
-#### Discussion
+**Discussion**
 
 String和Character都是完全兼容Unicode标准的，而Character代表一个可扩展的字形群，可以通过组合不同的Unicode标量来获得另外一个Unicode标量，如（下面两个变量的值都是é）：
 
@@ -144,17 +146,17 @@ for index in string.character.indices {
 
 ### 插入和删除字符或字符串
 
-#### Problem
+**Problem**
 
 如何在Swift中插入和删除字符或字符串？
 
-#### Solution
+**Solution**
 
 insert(\_:at:)插入字符、insert(contentsOf:at:)插入字符串
 
 remove(at:)删除字符、removeSubrange(\_:)删除子字符串
 
-#### Discussion
+**Discussion**
 
 可以在任意一个确认的并遵循 RangeReplaceableCollection 协议的类型里面使用 `insert(_:at:)`、`insert(contentsOf:at:)`、`remove(at:)` 和 `removeSubrange(_:)` 方法。
 
@@ -162,15 +164,15 @@ remove(at:)删除字符、removeSubrange(\_:)删除子字符串
 
 ### 逻辑运算符
 
-#### Problem
+**Problem**
 
 逻辑运算符以及组合运算
 
-#### Solution
+**Solution**
 
 逻辑运算符有`!`、 `&&`、 `||`三种，分别代表逻辑非、逻辑与、逻辑或。
 
-#### Discusstion
+**Discusstion**
 
 一元逻辑运算符`!`直接放在布尔型变量前，表示取反。
 
@@ -193,15 +195,15 @@ if condition1 && condition2 || condition3 || condition4 {
 
 ### 数组（Array）
 
-#### Problem
+**Problem**
 
 Swift中如何表示一个数组？有什么特性？
 
-#### Solution
+**Solution**
 
 Array，若是分配给变量(`var`修饰)，则可以添加、删除、更改数组中的项。若是分配给常量(`let`修饰)，则大小和内容都不能改变。
 
-#### Discussion
+**Discussion**
 
 数组使用`Array[Element]`或`[Element]`来创建，将它们看做是一种数据类型，所以在创建的时候都需要在类型后加上`()`，如
 
@@ -254,15 +256,15 @@ arrayC[2...4] = [6]	// 此时arrayC中的项为[1,2,6]
 
 ### 集合（Set）
 
-#### Problem
+**Problem**
 
 Swift中如何表示一个集合？有什么特性？
 
-#### Solution
+**Solution**
 
 集合(Set)用来存储相同类型并且没有确定顺序的值。当集合元素顺序不重要时或者希望确保每个元素只出现一次时可以使用集合。
 
-#### Discussion
+**Discussion**
 
 集合是通过Hash来确定一个值当前是否存储在其中。所以为了存储在集合中，该类型必须遵循`Hashable`协议。`Hashable`是一个`Protocal`，其中只有一个计算属性`hashValue`，用于返回计算后的哈希值。要选择一个对类型中包含的属性来说较为合适的哈希算法。见  **如何选取好的Hash算法**  
 
@@ -312,15 +314,15 @@ if pointsSet.contains(GridPoint(x: 1,y: 1)) {
 
 ### 集合的组合操作
 
-#### Problem
+**Problem**
 
 当我要对两个集合进行操作，取共同拥有的交集，取某一个集合相对于另一个集合的补集，或者取两个集合各自拥有的元素再组合成一个集合，应该怎么办？
 
-#### Solution
+**Solution**
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/setVennDiagram_2x.png)
 
-#### Discussion
+**Discussion**
 
 - 使用`intersection(_:)`方法根据两个集合中都包含的值创建的一个新的集合。
 - 使用`symmetricDifference(_:)`方法根据在一个集合中但不在两个集合中的值创建一个新的集合。
@@ -344,11 +346,11 @@ oddDigits. symmetricDifference(singleDigitPrimeNumbers).sorted()
 
 ### 集合间关系
 
-#### Problem
+**Problem**
 
 如何确定两个集合是相等、包含、严格包含、部分包含？
 
-#### Solution
+**Solution**
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/setEulerDiagram_2x.png)
 
@@ -358,7 +360,7 @@ a.isSuperset(of:b)	//true
 b.isDisjoint(with:c)	//true
 ```
 
-#### Discussion
+**Discussion**
 
 - 使用运算符`==`来判断两个集合是否包含全部相同的值。
 - 使用`isSubset(of:)`或`isSuperset(of:)`方法来判断一个集合是否是另外一个集合的子集或父集。一个集合对自己调用`isSubset(of:)`结果为`true`。
@@ -374,15 +376,15 @@ a.isSuperset(of:a.intersection(c))	//为true则部分包含，为false则完全�
 
 ### 字典
 
-#### Problem
+**Problem**
 
 Swift中如何表示一个字典？有什么特性？
 
-#### Solution
+**Solution**
 
 字典`Dictionary`是键值对，是一种存储多个相同类型的值的容器。可以通过键来得到存储在字典中的值。
 
-#### Discussion
+**Discussion**
 
 - Swift中的字典使用`Dictionary<Key, Value>`定义。
 - 可以使用`[Key:Value]`的形式创建一个字典对象。
@@ -418,25 +420,25 @@ if let result = dic3[1]	{	// 要注意： result 是 String?
 
 ### 如何选取好的Hash算法
 
-#### Problem
+**Problem**
 
-#### Solution
+**Solution**
 
-#### Discussion
+**Discussion**
 
 ## Swift特性
 
 ### 元祖(Tuples)
 
-#### Problem
+**Problem**
 
 如何在Swift的函数中返回多个值，或者将一组有关联的值“捆绑”在一起
 
-#### Solution
+**Solution**
 
 使用元祖，可把多个值组合成一个复合值。元组内的值可以是任意类型，并不要求是相同类型。
 
-#### Discussion
+**Discussion**
 
 最常见的是HTTP状态码 👉 404 对应 Page Not Found
 
@@ -473,15 +475,15 @@ http200Status.description
 
 ### 可选类型(Optional)
 
-#### Problem
+**Problem**
 
 什么是可选类型，怎么用好可选类型？
 
-#### Solution
+**Solution**
 
 可选类型用来处理值缺失的情况，在定义类型的时候在类型后加上? (表示可选类型) 或 ! (表示隐式解析可选类型)
 
-#### Discusstion
+**Discusstion**
 
 Swift中任何类型都可以被定义成Optional，在使用中可以将该值赋为nil。     
 
@@ -518,15 +520,15 @@ let value = (mayBeNil != nil) ? mayBeNil! : defaultValue
 
 ### Switch 
 
-#### Problem
+**Problem**
 
 Swift中的`switch`与其他语言不同在哪？
 
-#### Solution
+**Solution**
 
 不需要在`switch`中的每一个`case`后添加`break`，且`case`分支的模式可以是值的区间。
 
-#### Discussion
+**Discussion**
 
 当我们在C/C++、Java等语言中使用`switch`的时候，在每一个`case`中都需要添加`break`来什么分支结束，否则就会继续往下一个分支执行。
 
@@ -585,11 +587,11 @@ case let (x, y): // 这个分支可以匹配所有的情况，所以为了保证
 
 ### 错误处理
 
-#### Problem
+**Problem**
 
 在Swift中如何抛出错误，如何捕获错误？
 
-#### Solution
+**Solution**
 
 ```swift
 do {
@@ -599,7 +601,7 @@ do {
 }
 ```
 
-#### Discussion
+**Discussion**
 
 `somethingMayThrowError`是符合`Error`协议的类型。
 
