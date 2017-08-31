@@ -414,7 +414,7 @@ if let result = dic3[1]	{	// 要注意： result 是 String?
 
 像`Array`中的每一项可以以`(Index, Value)`元祖的形式返回，`Dictionary`中的每一项都可以以`(Key, Value)`元祖的形式返回。
 
-若只需使用字典的键或值，可以使用属性`keys`或`values`来单独获取。
+若只需使用字典的键或值，可以使用属性`keys`或`values`来单独获取。 
 
 ---
 
