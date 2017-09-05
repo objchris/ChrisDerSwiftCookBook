@@ -578,10 +578,78 @@ case (0...5, 0..<5):	// 在元祖中使用区间
 ```swift
 case (let x, 0): 
 	// some code that use x
-case let (x, y): // 这个分支可以匹配所有的情况，所以为了保证上面的case分支不会被截断，应该将此分支放在switch最后。
+case let (x, y): // 等价于 case (let x, let y): ，这个分支可以匹配所有的情况，所以为了保证上面的case分支可以被选中，应该将此分支放在switch最后。(相当于default)
 ```
 
-未完
+可以用`where`来为case添加额外的判断条件，如：
+
+```swift
+case (let x, 2) where x == 1: // 等价于case (1,2):
+case (let x, let y) where x == y:
+```
+
+---
+
+### 如何跳出多重循环
+
+#### Problem
+
+开发中难免会碰到满足某个条件就终止多重循环的时候，使用Swift应该怎么做呢？
+
+#### Solution
+
+使用Swift的带标签的语句，即在循环前加上标签。
+
+#### Discussion
+
+这个特性像是借鉴于`Java`，声明一个带标签的语句是通过在该语句的关键词的同一行前面放置一个标签，作为这个语句的前导关键词，并且该标签后面跟随一个冒号。
+
+```swift
+label:while condition {
+	switch something {
+    	case a:
+    		break
+    	case b:
+    		break label
+	}
+}
+```
+
+上述例子中，如果`something`是`a`，则会跳出`switch`，而如果`something `是`b`，那么则会跳出循环。
+
+---
+
+### if和guard
+
+#### Problem
+
+在函数中提前退出可以使用`if`和`guard`，二者有什么区别
+
+#### Solution
+
+#### Discussion
+
+`if`和`guard`的区别在于：
+
+1. `guard`语句总是带有`else`从句，如果`guard`后跟的条件语句为真时，才会执行`guard`后面的代码。而`if`则没有这种要求。
+2. `guard`不带从句，直接跟着`else`。
+3. 在`guard`后跟的条件语句中使用`let`解析的`optional`值可以在`guard`代码段后使用，而`if`则只能在从句代码段中使用。
+
+```swift
+guard let something = mayBeNil else {
+	return
+}
+print("\(something)")		// 合法的
+
+
+if let something = mayBeNil {
+	// something 只能在此代码段中使用
+}
+```
+
+
+
+
 
 ## 较复杂部分
 
