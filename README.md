@@ -253,6 +253,45 @@ func outsideFunc() -> ()->Void {
 }
 ```
 
+---
+
+### 枚举
+
+#### Problem
+
+在Swift中，枚举是怎么表示的？
+
+#### Solution
+
+大部分情况下，我们使用到的枚举🥐是：
+
+```swift
+enum <#EnumName#> {
+	case <#caseOne#>
+	case <#caseTwo#>
+  	case <#caseThree#>
+}
+```
+
+如果，我们需要将`caseOne`相关联的值存储起来，那就可以使用关联值，此时，枚举🥐是这样的：
+
+```swift
+enum <#EnumWithRelevance#> {
+	case <#caseOne#>(<#param#>)
+	case <#caseTwo#>(<#param#>,<#param#>)
+}
+```
+
+#### Discussion
+
+跟大多数编程语言相同，枚举的定义还是包裹在关键字`enum`代码块中。
+
+每个枚举定义了一个全新的类型，像Swift中其他类型一样，名字应该以大写字母开头，给枚举类型起一个单数名字而不是双数名字：
+
+```Swift
+let something = EnumName.caseOne
+```
+
 
 
 ## 集合类型
