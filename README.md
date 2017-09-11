@@ -263,28 +263,35 @@ func outsideFunc() -> ()->Void {
 
 #### Solution
 
-大部分情况下，我们使用到的枚举🥐是：
+大部分情况下，我们使用到的枚举是：
 
 ```swift
-enum <#EnumName#> {
-	case <#caseOne#>
-	case <#caseTwo#>
-  	case <#caseThree#>
+enum MyEnum {
+    case caseOne
+  	case caseTwo
 }
 ```
 
-如果，我们需要将`caseOne`相关联的值存储起来，那就可以使用关联值，此时，枚举🥐是这样的：
+如果，我们需要将`caseOne`相关联的值存储起来，那就可以使用关联值，此时，枚举是这样的：
 
 ```swift
-enum <#EnumWithRelevance#> {
-	case <#caseOne#>(<#param#>)
-	case <#caseTwo#>(<#param#>,<#param#>)
+enum Barcode {
+    case upc(Int, Int, Int, Int)
+  	case qrCode(String)
 }
 ```
 
 #### Discussion
 
-跟大多数编程语言相同，枚举的定义还是包裹在关键字`enum`代码块中。
+跟大多数编程语言相同，枚举的定义还是包裹在关键字`enum`代码块中🥐。
+
+```swift
+enum <#EnumName#>: <#Type#> {
+	case <#caseOne#>
+	case <#caseTwo#>
+  	case <#caseThree#>
+}
+```
 
 每个枚举定义了一个全新的类型，像Swift中其他类型一样，名字应该以大写字母开头，给枚举类型起一个单数名字而不是双数名字：
 
@@ -292,7 +299,61 @@ enum <#EnumWithRelevance#> {
 let something = EnumName.caseOne
 ```
 
+若**指定了枚举成员的类型**，如`Int`，那么枚举成员可以被默认值预填充。我们称此默认值为`原始值`。在使用原始值为**整数或者字符串类型**的枚举时，不需要显式地为每一个枚举成员设置原始值，Swift 将会自动为我们赋值。
 
+同时，由于定义了类型，枚举成员拥有了`rawValue`的属性，因此，在使用枚举类型的时候我们可以通过一个初始化方法来创建枚举，这个方法接收`rawValue`作为参数，返回`rawValue`对应的枚举成员或`rawValue`没有对应时返回`nil`。
+
+```swift
+enum CompassPoint: String {
+	case north, south, east, west
+}
+// 定义枚举时指定了类型String，因此枚举成员拥有了原始值，rawValue即其本身
+// 若没有指定类型，则不存在rawValue属性
+let direction = CompassPoint.north.rawValue // north
+var mayBeNil = CompassPoint(rawValue:"up") // nil
+```
+
+有关联值的枚举🥐：
+
+```swift
+enum <#EnumWithRelevance#>: <#Type#> {
+	case <#caseOne#>(<#paramType#>)
+	case <#caseTwo#>(<#paramType#>,<#paramType#>)
+}
+```
+
+有关联值的枚举可以为枚举成员保存关联值，如果关联值的类型还是枚举本身的话，那就涉及到递归枚举了。在枚举成员前面加上`indirect`来表示该成员可递归。如：
+
+```Swift
+enum ArithmeticExpression {
+	case number(Int)
+	indirect case addition(ArithmeticExpression, ArithmeticExpression)
+  	indirect case multiplication(ArithmeticExpression, ArithmeticExpression)
+}
+```
+
+用递归枚举可以很方便地解决嵌套表达式问题：`(1+2)*3`
+
+```swift
+let one = ArithmeticExpression.number(1)
+let two = ArithmeticExpression.number(2)
+let three = ArithmeticExpression.number(3)
+let sum = ArithmeticExpression.addition(one, two)
+let result = ArithmeticExpression.multiplication(sum, three)
+
+func evaluate(_ expression: ArithmeticExpression) -> Int {
+    switch expression {
+    case let .number(value):
+        return value
+    case let .addition(left, right):
+        return evaluate(left) + evaluate(right)”
+	case let .multiplication(left, right):
+        return evaluate(left) * evaluate(right)
+    }
+}
+
+print(evaluate(result))
+```
 
 ## 集合类型
 
