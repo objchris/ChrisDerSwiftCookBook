@@ -1,3 +1,18 @@
-这里会记录一些常用的Code Snippets
+这里会记录一些Chris常用的Code Snippets🥐
 
-正在努力生蛋中...
+### 为`String?`添加`extension`来处理`nil`和`""`
+
+```swift
+extension Optional where Wrapped == String {
+    var nilIfEmpty: String? {
+        guard let strongSelf = self else {
+            return nil
+        }
+        return strongSelf.isEmpty ? nil : strongSelf
+    }
+}
+```
+
+详细请见 [Chris der Swift Cookbook~](https://github.com/objchris/ChrisDerSwiftCookBook#为String?加extension)
+
+正在努力搓面团中...
