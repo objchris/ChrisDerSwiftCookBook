@@ -181,8 +181,8 @@ remove(at:)删除字符、removeSubrange(\_:)删除子字符串
 ```swift
 if let title = textField.text {
 	if title.isEmpty {
-    	// Alert: textField is empty!
-	}
+		// Alert: textField is empty!
+    }
 	// somewhere uses title
 }
 ```
@@ -303,10 +303,10 @@ let result = someFunction(2) { (param) -> Int in
 
 ```swift
 func outsideFunc() -> ()->Void {
-	func insideFunc() {
-    	print("I am a inside function")
-	}
-	return insideFunc;
+  func insideFunc() {
+    print("I am a inside function")
+  }
+  return insideFunc;
 }
 ```
 
@@ -487,7 +487,7 @@ Swift中如何表示一个集合？有什么特性？
 
 #### Discussion
 
-集合是通过Hash来确定一个值当前是否存储在其中。所以为了存储在集合中，该类型必须遵循`Hashable`协议。`Hashable`是一个`Protocal`，其中只有一个计算属性`hashValue`，用于返回计算后的哈希值。要选择一个对类型中包含的属性来说较为合适的哈希算法。见  **如何选取好的Hash算法**  
+集合是通过Hash来确定一个值当前是否存储在其中。所以为了存储在集合中，该类型必须遵循`Hashable`协议。`Hashable`是一个`Protocal`，其中只有一个计算属性`hashValue`，用于返回计算后的哈希值。要选择一个对类型中包含的属性来说较为合适的哈希算法。见  [**如何选取好的Hash算法**](https://github.com/objchris/ChrisDerSwiftCookBook#如何选取好的hash算法)
 
 再者`Hashable`是符合`Equatable`协议的。所以必须重载`==`来告诉`Set`（或下面将提到的`Dictionary`），如何判断两个元素是相同的。
 
@@ -1087,4 +1087,6 @@ serve(customer: {customersInLine.remove(at: 0)})
 ```
 
 自动闭包很典型的例子是：`assert(condition:message:file:line:) `， `condition`就是一个自动闭包。
+
+---
 
