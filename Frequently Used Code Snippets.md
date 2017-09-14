@@ -13,6 +13,6 @@ extension Optional where Wrapped == String {
 }
 ```
 
-详细请见 [Chris der Swift Cookbook~](https://github.com/objchris/ChrisDerSwiftCookBook#为String?加extension)
+详细请见 [Chris der Swift Cookbook~](https://github.com/objchris/ChrisDerSwiftCookBook#为string加extension)
 
 正在努力搓面团中...
