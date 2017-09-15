@@ -8,8 +8,6 @@ Now base on 《The Swift Programming Language》 Version 3.1
 
 以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便开发使用。
 
----
-
 
 
 ## 基本数据类型
