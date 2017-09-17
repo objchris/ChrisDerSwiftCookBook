@@ -1088,3 +1088,10 @@ serve(customer: {customersInLine.remove(at: 0)})
 
 ---
 
+### 类
+
+#### Problem
+
+#### Solution
+
+#### Discussion
