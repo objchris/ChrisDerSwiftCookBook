@@ -1,5 +1,7 @@
 # Chris der Swift Cookbook ~
 
+![Swift](https://img.shields.io/badge/%20in-swift%203.1-orange.svg)
+
 <img src="https://raw.githubusercontent.com/objchris/ChrisDerSwiftCookBook/master/photos/icon.png" alt="Chris's Cookbook Icon" align="right" width="250" height="250" />
 
 从头学Swift的读书笔记
