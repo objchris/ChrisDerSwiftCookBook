@@ -1,5 +1,7 @@
 # Chris der Swift Cookbook ~
 
+<img src="photos/Icon.png" alt="Chris's Cookbook Icon" align="right" width="250" height="250" />
+
 从头学Swift的读书笔记
 
 Now base on 《The Swift Programming Language》 Version 3.1 
