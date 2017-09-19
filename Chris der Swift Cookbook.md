@@ -416,10 +416,10 @@ Array，若是分配给变量(`var`修饰)，则可以添加、删除、更改�
 
 #### Discussion
 
-数组使用`Array[Element]`或`[Element]`来创建，将它们看做是一种数据类型，所以在创建的时候都需要在类型后加上`()`，如
+数组使用`Array<Element>`或`[Element]`来创建，将它们看做是一种数据类型，所以在创建的时候都需要在类型后加上`()`，如
 
 ```swift
-let arrayA = Array[Int]()
+let arrayA = Array<Int>()
 let arrayB = [Int]()
 ```
 
