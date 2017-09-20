@@ -1139,4 +1139,70 @@ if firstInstance === secondInstance {
 - 该数据结构不需要去继承另一个既有类型的属性或者行为。
 
 
+---
+
+### 属性
+
+#### Problem
+
+想在类、结构体等结构中存储值，在Swift中应该如何做，有什么需要注意的地方？
+
+#### Solution
+
+使用**属性**，存储变量或常量作为实例或类的一部分，还可以添加观察器来监控属性值的变化。
+
+#### Discussion
+
+写过OC都知道`@property`，就是我们常说的属性。在Swift中的属性跟OC又有点不同：
+
+属性的分类：
+
+- 存储属性
+
+直接在类或结构体中定义的变量或常量就是类或结构体的一个存储属性（**枚举类型没有实例存储属性**）：
+
+```swift
+class someClass {
+	let constantProperty: Int
+	var variableProperty: Int
+}
+struct someStruct {
+	let constantProperty: Int
+	var variableProperty: Int
+}
+```
+
+通过`.`获取实例的属性值：
+
+```swift
+let instance = someClass()
+instance.variableProperty = 1
+let i: Int = instance.variableProperty // 1
+```
+
+[类和结构体的异同及如何选择]()中，我们说到：
+
+> 所有结构体都有一个自动生成的构造函数，用于初始化新结构体实例中成员的属性，而类实例则没有。
+
+所以我们必须确保类的初始化函数中，类的所有非`Optional`属性都能得到一个初始的值。例如：
+
+```
+
+```
+
+当然属性也可以有默认值，这样就省去了在初始化函数中赋值的操作。
+
+```
+
+```
+
+当属性的值依赖于在实例的构造过程结束后才会知道影响值的外部因素时，或者当获得属性的初始值需要复杂或大量计算时，可以只在需要的时候计算属性的值，这种属性叫做**延迟储存属性**，用`lazy`修饰
+
+```swift
+lazy var lazyProperty = someComplicatedClass()	// lazy属性必须使用var来定义，因为常量let需要在构造完成之前必须要有初始值
+```
+
+特别注意：`lazy`属性在没有初始化的时候同时被多个线程访问，无法保证该属性只被初始化一次。（线程不安全）
+
+- 计算属性
 
