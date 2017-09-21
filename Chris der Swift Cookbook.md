@@ -1206,3 +1206,8 @@ lazy var lazyProperty = someComplicatedClass()	// lazy属性必须使用var来�
 
 - 计算属性
 
+
+
+
+---
+
