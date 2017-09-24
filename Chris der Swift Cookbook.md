@@ -1192,8 +1192,10 @@ let i: Int = instance.variableProperty // 1
 
 当然属性也可以有默认值，这样就省去了在初始化函数中赋值的操作。
 
-```
-
+```swift
+class someClass {
+	var aProperty: Int = 1
+}
 ```
 
 当属性的值依赖于在实例的构造过程结束后才会知道影响值的外部因素时，或者当获得属性的初始值需要复杂或大量计算时，可以只在需要的时候计算属性的值，这种属性叫做**延迟储存属性**，用`lazy`修饰
@@ -1207,7 +1209,92 @@ lazy var lazyProperty = someComplicatedClass()	// lazy属性必须使用var来�
 - 计算属性
 
 
+计算属性不直接存储值，而是提供`getter`和一个**可选**的`setter`函数，来间接获取和设置**其他属性或变量**的值。
 
+```swift
+
+struct Point {
+    var x = 0.0, y = 0.0
+}
+struct Size {
+    var width = 0.0, height = 0.0
+}
+struct Rect {
+    var origin = Point()
+    var size = Size()
+    var center: Point { // 通过center来获取中心点的坐标值和修改原点的值
+      get {
+        let centerX = origin.x + (size.width / 2)
+        let centerY = origin.y + (size.height / 2)
+        return Point(x: centerX, y: centerY)
+      }
+      set(newCenter) { // 若不指定变量名为newCenter，默认为newValue
+        origin.x = newCenter.x - (size.width / 2)
+        origin.y = newCenter.y - (size.height / 2)
+      }
+    }
+}
+```
+
+若只有`getter`没有`setter`，可以简化为：
+
+```swift
+var center: Point {
+	let centerX = origin.x + (size.width / 2)
+	let centerY = origin.y + (size.height / 2)
+	return Point(x: centerX, y: centerY)
+} // 此时center为只读属性
+```
+
+必须使用`var`关键字来定义计算属性，因为它们的值不是固定的。
+
+- 类属性
+
+上面讲述了实例属性，每创建一个实例，该实例就拥有自己的一套属性值，相互独立，而类属性则属于类本身，无论创建了多少个实例，这些属性只有唯一一个。
+
+存储型类型属性是延迟初始化的，它们只有在第一次被访问的时候才会被初始化。即使它们被多个线程同时访问，系统也保证只会对其进行一次初始化。
+
+用`static`或`class`来指定。
 
 ---
+
+### 属性观察器
+
+#### Problem
+
+在计算属性中，我们可以通过`setter`来监控值的变化，怎么在存储属性中做到这一步呢？
+
+#### Solution
+
+Swift提供了属性观察器，监控和响应属性值的变化，适用于：
+
+- **除了延迟存储属性`lazy`之外**的其他存储属性
+- 继承得到的属性，可通过重载的方式添加
+
+#### Discussion
+
+在Swift中，可以为属性添加如下的一个或全部观察器：
+
+- `willSet`在新的值被设置之前调用
+- `didSet`在新的值被设置之后调用
+
+```swift
+class StepCounter {
+	var totalSepts: Int {
+		willSet {
+          	// newValue可得到新值
+        	print("new value is \(newValue)")
+		}
+		didSet {
+          	// 可以获取到被覆盖的旧值，如果在此方法中继续对totalSteps赋值，那么totalSepts会被赋上新值
+			print("old value is \(OldValue)")
+		}
+	}
+}
+```
+
+注意：
+
+- 父类的属性在子类的构造器中被赋值时，它在父类中的 willSet 和 didSet 观察器会被调用，随后才会调用子类的观察器。在父类初始化方法调用之前，子类给属性赋值时，观察器不会被调用。 （父类属性的观察器只有在父类初始化方法调用后才会被调用）
+- 如果将属性通过 in-out 方式传入函数，willSet 和 didSet 也会调用。这是因为 in-out 参数采用了拷入拷出模式：即在函数内部使用的是参数的 copy，函数结束后，又对参数重新赋值。
 
