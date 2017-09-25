@@ -860,7 +860,7 @@ if let something = mayBeNil {
 }
 ```
 
-## 较复杂部分
+---
 
 ### 错误处理
 
@@ -1078,7 +1078,7 @@ serve(customer: {customersInLine.remove(at: 0)})
 
 自动闭包很典型的例子是：`assert(condition:message:file:line:) `， `condition`就是一个自动闭包。
 
-------
+## 结构类型
 
 ### 类和结构体的异同及如何选择
 
@@ -1324,3 +1324,10 @@ class StepCounter {
 
 ---
 
+### 初始化构造方法
+
+#### Problem
+
+#### Solution
+
+#### Discussion
