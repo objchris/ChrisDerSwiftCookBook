@@ -1,5 +1,7 @@
 # Chris der Swift Cookbook ~
 
+以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便开发使用。
+
 
 
 ## 基本数据类型
@@ -264,16 +266,16 @@ func funName([paramLabel] param: [inout] Type [= defaultValue] , ...) [throws] -
    3. 输入输出参数标志关键字`inout`，Swift的函数参数默认是不能在函数体中被修改的，会导致编译错误。若想修改此参数，需在类型前添加`inout`关键字。**输入输出参数不能有默认值，且可变参数不能用inout标记。**
    4. 参数类型：可以是`class`、结构体`struts`、数组`[Double]`、可变参数`Double...`，一个函数最多只能有一个可变参数。
    5. 默认值：当默认值被定义后，调用这个函数时可以忽略这个参数。**一般将带默认值的参数放在最后面**
-4. 根据是否抛出错误给调用者处理，决定是否添加`throws`关键字，[**错误处理**](https://github.com/objchris/ChrisDerSwiftCookBook#错误处理)部分将详细讲解
+4. 根据是否抛出错误给调用者处理，决定是否添加`throws`关键字，[**错误处理**](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#错误处理)部分将详细讲解
 5. 返回类型
 
 调用时需要注意：
 
 1. 如果上述3.1中参数标签为`_`，则不需要写参数名称。
 2. 若有3.2中的`inout`属性，只能传入变量`var`，且在参数前需要加上`&`，这一点跟C/C++有点像
-3. 有上述4中的`throws`关键字，需要用`do-try-catch`代码块，[**错误处理**](https://github.com/objchris/ChrisDerSwiftCookBook#错误处理)部分将详细讲解
+3. 有上述4中的`throws`关键字，需要用`do-try-catch`代码块，[**错误处理**](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#错误处理)部分将详细讲解
 4. 函数是**第一等类型**，意味着可以是函数的参数以及返回值。类型由参数类型和返回类型决定，如：` func add(_ a:Int, _ b: Int)->Int ` 👉`(Int,Int)->Int`，二者都没有的函数的类型为：`()->Void`。
-5. 因为函数可以作为参数，当一个函数的最后一个参数是另一个参数的时候，在调用的时候可以作为不写在参数括号`()`中，而是作为[**尾随闭包**](https://github.com/objchris/ChrisDerSwiftCookBook#discussion-19)用`{}`包括起来添加在函数之后。即：
+5. 因为函数可以作为参数，当一个函数的最后一个参数是另一个参数的时候，在调用的时候可以作为不写在参数括号`()`中，而是作为[**尾随闭包**](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#闭包)用`{}`包括起来添加在函数之后。即：
 
 ```swift
 // 定义
@@ -477,7 +479,7 @@ Swift中如何表示一个集合？有什么特性？
 
 #### Discussion
 
-集合是通过Hash来确定一个值当前是否存储在其中。所以为了存储在集合中，该类型必须遵循`Hashable`协议。`Hashable`是一个`Protocal`，其中只有一个计算属性`hashValue`，用于返回计算后的哈希值。要选择一个对类型中包含的属性来说较为合适的哈希算法。见  [**如何选取好的Hash算法**](https://github.com/objchris/ChrisDerSwiftCookBook#如何选取好的hash算法)
+集合是通过Hash来确定一个值当前是否存储在其中。所以为了存储在集合中，该类型必须遵循`Hashable`协议。`Hashable`是一个`Protocal`，其中只有一个计算属性`hashValue`，用于返回计算后的哈希值。要选择一个对类型中包含的属性来说较为合适的哈希算法。见  [**如何选取好的Hash算法**](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#如何选取好的hash算法)
 
 再者`Hashable`是符合`Equatable`协议的。所以必须重载`==`来告诉`Set`（或下面将提到的`Dictionary`），如何判断两个元素是相同的。
 
@@ -759,13 +761,13 @@ switch condition {
 
 这样写固然可以，但是可以使用`fallthrough`合起来写
 
-```
+```swift
 switch condition {
-	case A : 
-		代码段A 
-		fallthrough
-	case B : 
-		代码段B
+    case A : 
+        代码段A 
+        fallthrough
+    case B : 
+        代码段B
 }
 ```
 
@@ -1180,7 +1182,7 @@ instance.variableProperty = 1
 let i: Int = instance.variableProperty // 1
 ```
 
-[类和结构体的异同及如何选择]()中，我们说到：
+[类和结构体的异同及如何选择](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#类和结构体的异同及如何选择)中，我们说到：
 
 > 所有结构体都有一个自动生成的构造函数，用于初始化新结构体实例中成员的属性，而类实例则没有。
 
