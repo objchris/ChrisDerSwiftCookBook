@@ -519,7 +519,7 @@ var pointsSet: Set<GridPoint> = [GridPoint(x: 1,y: 1),GridPoint(x: 2,y: 2)]
 
 ```swift
 if pointsSet.contains(GridPoint(x: 1,y: 1)) {
-	print("Yeah! I got a point")
+    print("Yeah! I got a point")
 }
 ```
 
@@ -619,7 +619,7 @@ var dic3 = [1:"string1",2:"string2",3:"string3"]
 dic3[1] = "string that change"	// 上文定义dic3的时候使用var，所以dic3才可以添加删除修改元素
 let stringThatChange = dic3.updateValue("string that change", forKey:1)		//stringThatChange 是 String?
 if let result = dic3[1]	{	// 要注意： result 是 String?
-	...
+    ...
 }
 ```
 
@@ -751,11 +751,11 @@ Swift中的`switch`与其他语言不同在哪？
 
 ```swift
 switch condition {
-	case A : 
-  		代码段A
-	case B : 
-  		代码段A
-  		代码段B
+    case A : 
+        代码段A
+    case B : 
+        代码段A
+        代码段B
 }
 ```
 
@@ -819,11 +819,11 @@ case (let x, let y) where x == y:
 
 ```swift
 label:while condition {
-	switch something {
-    	case a:
-    		break
-    	case b:
-    		break label
+    switch something {
+        case a:
+            break
+        case b:
+            break label
 	}
 }
 ```
@@ -852,13 +852,13 @@ label:while condition {
 
 ```swift
 guard let something = mayBeNil else {
-	return
+    return
 }
-print("\(something)")		// 合法的
+print("\(something)")	// 合法的
 
 
 if let something = mayBeNil {
-	// something 只能在此代码段中使用
+    // something 只能在此代码段中使用
 }
 ```
 
@@ -874,9 +874,9 @@ if let something = mayBeNil {
 
 ```swift
 do {
-  try somethingMayThrowError
+    try somethingMayThrowError
 } catch {
-  // 抛出错误时进行处理
+    // 抛出错误时进行处理
 }
 ```
 
@@ -901,7 +901,7 @@ enum <#ErrorTitle#> : Error {
 
 ```swift
 init(name: String) throws {
-  ...
+    ...
 }
 ```
 
@@ -947,7 +947,7 @@ do {
 
 `try!`用于断言运行时不会有错误抛出，因此也不需要处理错误。
 
-相当于Java中的Finally语句，在Swift中可以使用`defer`在即将离开当前代码块时执行一系列语句（用于释放资源或记录日志等）。若有多个`defer`代码块，则按照被指定的顺序的相反顺序执行。
+相当于Java中的Finally语句，在Swift中可以使用`defer`在即将离开当前代码块时执行一系列语句（用于释放资源或记录日志等）。若有多个`defer`代码块，则按照被指定的顺序的**相反顺序**执行。
 
 ```swift
 func processFile(filename: String) throws {
@@ -958,7 +958,7 @@ func processFile(filename: String) throws {
             close(file)
         }
         defer {
-        	print("invoked first")
+            print("invoked first")
         }
         while let line = try file.readline() {
             // 处理文件。
@@ -991,7 +991,7 @@ func processFile(filename: String) throws {
 
 ```swift
 {(paramters) -> returnType in
-	statements
+    statements
 }
 ```
 
@@ -1002,7 +1002,7 @@ func processFile(filename: String) throws {
 ```swift
 // 定义
 func someFunction(_ a: Int, _ b: (Int)->Int) -> Int {
-	return b(a)
+    return b(a)
 }
 // 调用，使用尾随闭包指定第二个参数
 let result = someFunction(2, { (param: Int) -> Int in
@@ -1034,7 +1034,7 @@ Swift自动为**内联闭包**提供参数名称缩写功能，直接通过`$0`�
 let result = someFunction(2, {$0 + 1})
 // or another closure
 let result = someFunction(2, {
-	if $0 > 0 {
+    if $0 > 0 {
         return 100
     } else {
         return 0
@@ -1109,10 +1109,10 @@ serve(customer: {customersInLine.remove(at: 0)})
 
 ```swift
 class SomeClass {
-	let someProperty
+    let someProperty
 }
 struct SomeStruct {
-  	let someProperty
+    let someProperty
 }
 ```
 
@@ -1129,7 +1129,7 @@ struct SomeStruct {
 let firstInstance = SomeClass()
 let secondInstance = firstInstance
 if firstInstance === secondInstance {
-	// the same instance
+    // the same instance
 }
 ```
 
@@ -1165,12 +1165,12 @@ if firstInstance === secondInstance {
 
 ```swift
 class SomeClass {
-	let constantProperty: Int
-	var variableProperty: Int
+    let constantProperty: Int
+    var variableProperty: Int
 }
 struct SomeStruct {
-	let constantProperty: Int
-	var variableProperty: Int
+    let constantProperty: Int
+    var variableProperty: Int
 }
 ```
 
@@ -1191,7 +1191,7 @@ let i: Int = instance.variableProperty // 1
 ```swift
 class Person {
     var name: String
-  	init(name: String) {
+    init(name: String) {
       	// 不初始化name属性会导致编译错误
         self.name = name
     }
@@ -1202,7 +1202,7 @@ class Person {
 
 ```swift
 class SomeClass {
-	var aProperty: Int = 1
+    var aProperty: Int = 1
 }
 ```
 
@@ -1216,8 +1216,6 @@ class SomeClass {
     }()  // 此处大括号后接了一对空的小括号，用来告诉Swift立即执行此闭包。
 }
 ```
-
-
 
 当属性的值依赖于在实例的构造过程结束后才会知道影响值的外部因素时，或者当获得属性的初始值需要复杂或大量计算时，可以只在需要的时候计算属性的值，这种属性叫做**延迟储存属性**，用`lazy`修饰
 
@@ -1243,15 +1241,15 @@ struct Rect {
     var origin = Point()
     var size = Size()
     var center: Point { // 通过center来获取中心点的坐标值和修改原点的值
-      get {
-        let centerX = origin.x + (size.width / 2)
-        let centerY = origin.y + (size.height / 2)
-        return Point(x: centerX, y: centerY)
-      }
-      set(newCenter) { // 若不指定变量名为newCenter，默认为newValue
-        origin.x = newCenter.x - (size.width / 2)
-        origin.y = newCenter.y - (size.height / 2)
-      }
+        get {
+            let centerX = origin.x + (size.width / 2)
+            let centerY = origin.y + (size.height / 2)
+            return Point(x: centerX, y: centerY)
+        }
+        set(newCenter) { // 若不指定变量名为newCenter，默认为newValue
+            origin.x = newCenter.x - (size.width / 2)
+            origin.y = newCenter.y - (size.height / 2)
+        }
     }
 }
 ```
@@ -1260,9 +1258,9 @@ struct Rect {
 
 ```swift
 var center: Point {
-	let centerX = origin.x + (size.width / 2)
-	let centerY = origin.y + (size.height / 2)
-	return Point(x: centerX, y: centerY)
+    let centerX = origin.x + (size.width / 2)
+    let centerY = origin.y + (size.height / 2)
+    return Point(x: centerX, y: centerY)
 } // 此时center为只读属性
 ```
 
@@ -1319,16 +1317,16 @@ Swift提供了属性观察器，监控和响应属性值的变化，适用于：
 
 ```swift
 class StepCounter {
-	var totalSepts: Int {
-		willSet {
-          	// newValue可得到新值
+    var totalSepts: Int {
+        willSet {
+            // newValue可得到新值
         	print("new value is \(newValue)")
-		}
-		didSet {
+        }
+        didSet {
           	// 可以获取到被覆盖的旧值，如果在此方法中继续对totalSteps赋值，那么totalSepts会被赋上新值
-			print("old value is \(OldValue)")
-		}
-	}
+            print("old value is \(OldValue)")
+        }
+    }
 }
 ```
 
