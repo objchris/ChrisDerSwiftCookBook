@@ -128,7 +128,7 @@ let combinedEAcute: Character = "\u{65}\u{301}"  // e后面加上 ́
 
 ```swift
 for index in string.character.indices {
-  ...
+    ...
 }
 ```
 
@@ -172,10 +172,10 @@ remove(at:)删除字符、removeSubrange(\_:)删除子字符串
 
 ```swift
 if let title = textField.text {
-	if title.isEmpty {
-		// Alert: textField is empty!
+    if title.isEmpty {
+        // Alert: textField is empty!
     }
-	// somewhere uses title
+    // somewhere uses title
 }
 ```
 
@@ -280,8 +280,8 @@ func funName([paramLabel] param: [inout] Type [= defaultValue] , ...) [throws] -
 ```swift
 // 定义
 func someFunction(_ a: Int, _ b: (Int)->Int) -> Int {
-  	// 这里用函数b来处理a，将b的返回值作为someFunction的返回值
-	return b(a)
+    // 这里用函数b来处理a，将b的返回值作为someFunction的返回值
+    return b(a)
 }
 
 // 调用，这里{}部分是someFunction的第二个参数，但是由于是最后一个参数且是函数作为参数，所以用闭包来表示
@@ -295,10 +295,10 @@ let result = someFunction(2) { (param) -> Int in
 
 ```swift
 func outsideFunc() -> ()->Void {
-  func insideFunc() {
-    print("I am a inside function")
-  }
-  return insideFunc;
+    func insideFunc() {
+        print("I am a inside function")
+    }
+    return insideFunc;
 }
 ```
 
@@ -317,7 +317,7 @@ func outsideFunc() -> ()->Void {
 ```swift
 enum MyEnum {
     case caseOne
-  	case caseTwo
+    case caseTwo
 }
 ```
 
@@ -326,7 +326,7 @@ enum MyEnum {
 ```swift
 enum Barcode {
     case upc(Int, Int, Int, Int)
-  	case qrCode(String)
+    case qrCode(String)
 }
 ```
 
@@ -336,9 +336,9 @@ enum Barcode {
 
 ```swift
 enum <#EnumName#>: <#Type#> {
-	case <#caseOne#>
-	case <#caseTwo#>
-  	case <#caseThree#>
+    case <#caseOne#>
+    case <#caseTwo#>
+    case <#caseThree#>
 }
 ```
 
@@ -354,7 +354,7 @@ let something = EnumName.caseOne
 
 ```swift
 enum CompassPoint: String {
-	case north, south, east, west
+    case north, south, east, west
 }
 // 定义枚举时指定了类型String，因此枚举成员拥有了原始值，rawValue即其本身
 // 若没有指定类型，则不存在rawValue属性
@@ -366,8 +366,8 @@ var mayBeNil = CompassPoint(rawValue:"up") // nil
 
 ```swift
 enum <#EnumWithRelevance#>: <#Type#> {
-	case <#caseOne#>(<#paramType#>)
-	case <#caseTwo#>(<#paramType#>,<#paramType#>)
+    case <#caseOne#>(<#paramType#>)
+    case <#caseTwo#>(<#paramType#>,<#paramType#>)
 }
 ```
 
@@ -375,9 +375,9 @@ enum <#EnumWithRelevance#>: <#Type#> {
 
 ```swift
 enum ArithmeticExpression {
-	case number(Int)
-	indirect case addition(ArithmeticExpression, ArithmeticExpression)
-  	indirect case multiplication(ArithmeticExpression, ArithmeticExpression)
+    case number(Int)
+    indirect case addition(ArithmeticExpression, ArithmeticExpression)
+    indirect case multiplication(ArithmeticExpression, ArithmeticExpression)
 }
 ```
 
@@ -490,18 +490,18 @@ Swift中如何表示一个集合？有什么特性？
 ```swift
 // A point in an x-y coordinate system.
 struct GridPoint {
-	var x: Int
-	var y: Int
+    var x: Int
+    var y: Int
 }
 // 若要在Set中保存，或需要作为Dictionary的Key
 extension GridPoint: Hashable {
-	var hashValue: Int {
-	     return x.hashValue ^ y.hashValue &* 16777619
-	}
+    var hashValue: Int {
+        return x.hashValue ^ y.hashValue &* 16777619
+    }
 
-	static func == (lhs: GridPoint, rhs: GridPoint) -> Bool {
-		return lhs.x == rhs.x && lhs.y == rhs.y
-	}
+    static func == (lhs: GridPoint, rhs: GridPoint) -> Bool
+        return lhs.x == rhs.x && lhs.y == rhs.y
+    }
 }
 ```
 
