@@ -2,6 +2,12 @@
 
 以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便开发使用。
 
+11866 Words, 28561 Character, may need 44 Minutes to very fast read.
+
+So, cut the crap. Let's go for it. ヾ(o◕∀◕)ﾉヾ
+
+[TOC]
+
 
 
 ## 基本数据类型
@@ -717,11 +723,11 @@ if let actualNumber = Int(possibleNumber) {
 
 使用可选类型时，需要保证其不为空，除了上述的“可选绑定”方式外，若你确定其不为空，可以直接使用 ! 来获取值：`print("\(possibleNumber!) is an integer")`
 
-! 不仅可以用来解析 ? 声明的可选类型，还可以用来声明隐式解析可选类型。     
+`!` 不仅可以用来解析` ?` 声明的可选类型，还可以用来声明隐式解析可选类型。     
 
-隐式解析可选类型在第一次赋值确定之后一定有值的时候，使用其不需要再在变量或常量后面加上 ! ，但是需要特别注意的是，一定要确保有值，不然会得到运行时错误。
+隐式解析可选类型在第一次赋值确定之后一定有值的时候，使用其不需要再在变量或常量后面加上` !` ，但是需要特别注意的是，一定要确保有值，不然会得到运行时错误。
 
-在可选类型后加上空白运算符`??`将对可选类型进行空判断，若该值为nil，则返回`??`后跟上的默认值：
+在可选类型后加上空白运算符`??`将对可选类型进行空判断，若该值为`nil`，则返回`??`后跟上的默认值：
 
 ```swift
 let value = mayBeNil ?? defaultValue
@@ -1211,7 +1217,7 @@ class SomeClass {
 ```swift
 class SomeClass {
     var aProperty: Int = {
-      	// 在此闭包内，实例的其他部分还没有初始化，因此不能在此访问其他属性，不能使用self，或调用任何实例方法。
+      	// 在此闭包内，实例的其他部分还没有初始化，因此不能在此访问其他属性，不能使用self，或调用任何实例方法。(lazy属性除外)
         return 1  // 返回值的类型必须和定义的类型相同，此例是Int
     }()  // 此处大括号后接了一对空的小括号，用来告诉Swift立即执行此闭包。
 }
@@ -1320,10 +1326,10 @@ class StepCounter {
     var totalSepts: Int {
         willSet {
             // newValue可得到新值
-        	print("new value is \(newValue)")
+            print("new value is \(newValue)")
         }
         didSet {
-          	// 可以获取到被覆盖的旧值，如果在此方法中继续对totalSteps赋值，那么totalSepts会被赋上新值
+            // 可以获取到被覆盖的旧值，如果在此方法中继续对totalSteps赋值，那么totalSepts会被赋上新值
             print("old value is \(OldValue)")
         }
     }
@@ -1410,9 +1416,9 @@ convenience init {
 
 定义指定构造器的步骤：
 
-1. 初始化本类的属性；
-2. 调用Super.init，为父类的属性赋值；
-3. 使用self和读取实例属性的值，修改属性或调用实例方法。**[可选]**
+1. 初始化本类的属性（可选类型`?`、`!`，有默认值`nil`，可以不用赋值），若构造方法的参数名称和属性名称相同，可用`self`来区分；
+2. 调用`super.init()`，为父类的属性赋值；**[可选]**
+3. `self`**初始化完成**，读取或修改实例属性或调用实例方法。**[可选]**
 
 重写父类的指定构造器时，需要添加`override`关键字，而重写便利构造器则不需要。
 
@@ -1436,4 +1442,65 @@ init?(some: String) {
 在类的构造器前添加`required`修饰符表明所有该类的子类都必须实现该构造器，这就是必要构造器。重写父类中必要的指定构造器时，不需要添加`override`关键字，但是还是需要`required`关键字。
 
 ---
+
+### 类实例之间的强引用循环
+
+#### Problem
+
+我们都听说过自动引用计数`ARC`，解决的是应用中内存的分配问题。有了这一个特性，有可能使我们的实例之间保存着强引用，理清实例之间的关系，有助于我们打破实例间的强引用。
+
+#### Solution
+
+下述两种场景分别对应着两种不同的强引用解决方式：`weak`、`unowned`
+
+#### Discussion
+
+首先，有可能存在两个类，他们之间有相互引用的关系，例如一个人对应一间公寓，因为`ARC`，我们知道，如果这二者之间都保留着对对方的强引用，那么必然会有循环引用的情况出现。
+
+`weak`是弱引用，被声明为弱引用的属性会在引用的实例被销毁后自动将其赋值为`nil`，因此我们需要其定义为**可选类型变量**，而非常量。
+
+> 当 ARC 设置弱引用为nil时，属性观察不会被触发。
+
+像人和公寓的问题，可以如下定义：
+
+```swift
+class Person {
+    let name: String
+    init(name: String) { self.name = name }
+    var apartment: Apartment?
+}
+class Apartment {
+    let unit: String
+    init(unit: String) { self.unit = unit }
+    weak var tenant: Person?
+}
+// 因为多对多的关系，且我们不能知道二者的生命周期，所以在Apartment中将Person定义为weak，当tenant属性对应的实例被销毁时，该Apartment实例的tenant被置为nil
+```
+
+另一个很简单的例子就是个人与信用卡的关系。信用卡依附于个人存在，当个人不存在（消失？Whatever）时，该个人对应的信用卡自然应该销毁。
+
+解决这种循环强引用，我们用到`unowned`关键字，叫做无主引用。使用无主引用，你必须确保引用始终指向一个未销毁的实例。因此，用`unowned`修饰的属性必须用`let`声明。
+
+```swift
+class Customer {
+    let name: String
+    var card: CreditCard?
+    init(name: String) {
+        self.name = name
+    }
+}
+class CreditCard {
+    let number: UInt64
+    unowned let customer: Customer
+    init(number: UInt64, customer: Customer) {
+        self.number = number
+        self.customer = customer
+    }
+}
+// 在CreditCard中，我们将customer修饰为unowned，因为我们可以清晰的知道，信用卡是依附于人存在的，生命周期短于或等于Customer。
+```
+
+上面两个例子基本涵盖了多数情况。想有更详尽的了解，可以参考一下[此文](http://swifter.tips/retain-cycle/)。
+
+> 关于两者使用的选择，Apple 给我们的建议是如果能够确定在访问时不会已被释放的话，尽量使用 `unowned`，如果存在被释放的可能，那就选择用 `weak`。
 
