@@ -8,8 +8,6 @@ So, cut the crap. Let's go for it. ヾ(o◕∀◕)ﾉヾ
 
 [TOC]
 
-
-
 ## 基本数据类型
 
 ### 整数
@@ -1417,7 +1415,7 @@ convenience init {
 定义指定构造器的步骤：
 
 1. 初始化本类的属性（可选类型`?`、`!`，有默认值`nil`，可以不用赋值），若构造方法的参数名称和属性名称相同，可用`self`来区分；
-2. 调用`super.init()`，为父类的属性赋值；**[可选]**
+2. 调用`super.init()`，为父类的属性赋值；**[有父类必须调用，否则不需要]**
 3. `self`**初始化完成**，读取或修改实例属性或调用实例方法。**[可选]**
 
 重写父类的指定构造器时，需要添加`override`关键字，而重写便利构造器则不需要。
@@ -1506,11 +1504,11 @@ class CreditCard {
 
 ---
 
-### 闭包引起的引用循环
+### 闭包引起的循环引用
 
 #### Problem
 
-当把一个闭包赋值给某个属性时，是将这个闭包的引用赋值给了属性。而如果这个闭包里面引用了Self，那就会导致引用循环，在OC中我们在外部定义weakself，在Swift中应该怎么做呢？
+当把一个闭包赋值给某个属性时，是将这个闭包的引用赋值给了属性。而如果这个闭包里面引用了Self，那就会导致循环引用，在OC中我们在外部定义weakself，在Swift中应该怎么做呢？
 
 #### Solution
 
@@ -1521,7 +1519,7 @@ class CreditCard {
 **闭包捕获列表**是在定义闭包时同时定义捕获列表作为闭包的一部分，通过这种方式可以解决闭包和类实例之间的循环强引用。
 
 ```swift
-var someClosure: Void -> String = {
+lazy var someClosure: Void -> String = {
     [unowned self, weak delegate = self.delegate!] in
     // 这里是闭包的函数体
 }
