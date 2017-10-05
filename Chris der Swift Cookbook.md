@@ -1529,3 +1529,84 @@ lazy var someClosure: Void -> String = {
 
 ---
 
+### 类型转换
+
+#### Problem
+
+在Swift中如何使用类型转换？
+
+#### Solution
+
+类型转换在 Swift 中使用 `is` 和 `as` 操作符实现。这两个操作符提供了一种简单达意的方式去检查值的类型或者转换它的类型。
+
+#### Discussion
+
+`is`比较简单，是用来判断某个实例的类型是否是我们预期中的类型。若实例属于那个类型，类型检查操作符返回` true`，否则返回 `false`。
+
+```Swift
+if object is SomeType {}
+```
+
+`as`相对来说比较复杂，其中涉及到向上转型和向下转型：
+
+- 向上转型：子类转成父类，用`as`
+
+  ```Swift
+  // 例子定义了父类Animal和子类Cat，由子类转成父类
+  class Animal {}
+  class Cat: Animal{}
+  let cat = Cat()
+  let animal = cat as Animal
+  ```
+
+
+- `as`还可以用在`switch`表达式的`case`中用来找出只知道是`Any`或`AnyObject`类型的常量或变量的具体类型
+
+  - `AnyObject`可以表示任何类类型。
+
+    ```Swift
+    @objc protocol AnyObject {}
+    ```
+
+  - `Any` 可以表示任何类型，包括函数类型。
+
+    ```Swift
+    typealias Any = protocol<>
+    ```
+
+  ```Swift
+  var things = [Any]()
+  things.append(0)
+  things.append(0.0)
+  things.append("hello")
+  for thing in things {
+      switch thing {
+      case 0 as Int:
+          print("Int 0")
+      case 0 as Double:
+          print("Double 0")
+      case is String:
+          print("is a string")
+      default:
+          break
+      }
+  }
+  ```
+
+
+- 向下转型：父类转成子类，用`as?`和`as!`
+
+  当你不确定向下转型可以成功时，用`as?`。总是返回一个可选值，并且向下转型如果是不可能的，则返回`nil`。
+
+  ```swift
+  class Dog: Animal{}
+  let zoo: [Animal] = [Cat(), Dog()]
+  for animal in zoo { // animal是Animal类型
+      if let cat = animal as? Cat {
+          print("mew~🐱")
+      }
+  }
+  ```
+
+  `as!`则是确定向下转型一定会成功时使用的。当你试图向下转型为一个不正确的类型时，强制形式的类型转换会触发一个运行时错误。
+
