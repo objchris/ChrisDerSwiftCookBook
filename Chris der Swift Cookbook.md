@@ -2,7 +2,7 @@
 
 以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便开发使用。
 
-11866 Words, 28561 Character, may need 44 Minutes to very fast read.
+13515 Words, 32185 Character, may need 50 Minutes to very fast read.
 
 So, cut the crap. Let's go for it. ヾ(o◕∀◕)ﾉヾ
 
@@ -1165,137 +1165,138 @@ if firstInstance === secondInstance {
 
 - 存储属性
 
-直接在类或结构体中定义的变量或常量就是类或结构体的一个存储属性（**枚举类型没有实例存储属性**）：
+  直接在类或结构体中定义的变量或常量就是类或结构体的一个存储属性（**枚举类型没有实例存储属性**）：
 
-```swift
-class SomeClass {
-    let constantProperty: Int
-    var variableProperty: Int
-}
-struct SomeStruct {
-    let constantProperty: Int
-    var variableProperty: Int
-}
-```
+  ```swift
+  class SomeClass {
+      let constantProperty: Int
+      var variableProperty: Int
+  }
+  struct SomeStruct {
+      let constantProperty: Int
+      var variableProperty: Int
+  }
+  ```
 
-通过`.`获取实例的属性值：
+  通过`.`获取实例的属性值：
 
-```swift
-let instance = someClass()
-instance.variableProperty = 1
-let i: Int = instance.variableProperty // 1
-```
+  ```swift
+  let instance = someClass()
+  instance.variableProperty = 1
+  let i: Int = instance.variableProperty // 1
+  ```
 
-[类和结构体的异同及如何选择](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#类和结构体的异同及如何选择)中，我们说到：
+  [类和结构体的异同及如何选择](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#类和结构体的异同及如何选择)中，我们说到：
 
-> 所有结构体都有一个自动生成的构造函数，用于初始化新结构体实例中成员的属性，而类实例则没有。
+  > 所有结构体都有一个自动生成的构造函数，用于初始化新结构体实例中成员的属性，而类实例则没有。
 
-所以我们必须确保类的初始化方法中，类的所有非`Optional`属性都能得到一个初始的值。例如：
+  所以我们必须确保类的初始化方法中，类的所有非`Optional`属性都能得到一个初始的值。例如：
 
-```swift
-class Person {
-    var name: String
-    init(name: String) {
-      	// 不初始化name属性会导致编译错误
-        self.name = name
-    }
-}
-```
+  ```swift
+  class Person {
+      var name: String
+      init(name: String) {
+        	// 不初始化name属性会导致编译错误
+          self.name = name
+      }
+  }
+  ```
 
-当然属性也可以有默认值，这样就省去了在初始化方法中赋值的操作。
+  当然属性也可以有默认值，这样就省去了在初始化方法中赋值的操作。
 
-```swift
-class SomeClass {
-    var aProperty: Int = 1
-}
-```
+  ```swift
+  class SomeClass {
+      var aProperty: Int = 1
+  }
+  ```
 
-另外一种提供默认值的方式是：通过闭包或函数来设置
+  另外一种提供默认值的方式是：通过闭包或函数来设置
 
-```swift
-class SomeClass {
-    var aProperty: Int = {
-      	// 在此闭包内，实例的其他部分还没有初始化，因此不能在此访问其他属性，不能使用self，或调用任何实例方法。(lazy属性除外)
-        return 1  // 返回值的类型必须和定义的类型相同，此例是Int
-    }()  // 此处大括号后接了一对空的小括号，用来告诉Swift立即执行此闭包。
-}
-```
+  ```swift
+  class SomeClass {
+      var aProperty: Int = {
+        	// 在此闭包内，实例的其他部分还没有初始化，因此不能在此访问其他属性，不能使用self，或调用任何实例方法。(lazy属性除外)
+          return 1  // 返回值的类型必须和定义的类型相同，此例是Int
+      }()  // 此处大括号后接了一对空的小括号，用来告诉Swift立即执行此闭包。
+  }
+  ```
 
-当属性的值依赖于在实例的构造过程结束后才会知道影响值的外部因素时，或者当获得属性的初始值需要复杂或大量计算时，可以只在需要的时候计算属性的值，这种属性叫做**延迟储存属性**，用`lazy`修饰
+  当属性的值依赖于在实例的构造过程结束后才会知道影响值的外部因素时，或者当获得属性的初始值需要复杂或大量计算时，可以只在需要的时候计算属性的值，这种属性叫做**延迟储存属性**，用`lazy`修饰
 
-```swift
-lazy var lazyProperty = someComplicatedClass()	// lazy属性必须使用var来定义，因为常量let需要在构造完成之前必须要有初始值
-```
+  ```swift
+  lazy var lazyProperty = someComplicatedClass()	// lazy属性必须使用var来定义，因为常量let需要在构造完成之前必须要有初始值
+  ```
 
-特别注意：`lazy`属性在没有初始化的时候同时被多个线程访问，无法保证该属性只被初始化一次。（线程不安全）
+  特别注意：`lazy`属性在没有初始化的时候同时被多个线程访问，无法保证该属性只被初始化一次。（线程不安全）
+
 
 - 计算属性
 
+  计算属性不直接存储值，而是提供`getter`和一个**可选**的`setter`函数，来间接获取和设置**其他属性或变量**的值。
 
-计算属性不直接存储值，而是提供`getter`和一个**可选**的`setter`函数，来间接获取和设置**其他属性或变量**的值。
+  ```swift
+  struct Point {
+      var x = 0.0, y = 0.0
+  }
+  struct Size {
+      var width = 0.0, height = 0.0
+  }
+  struct Rect {
+      var origin = Point()
+      var size = Size()
+      var center: Point { // 通过center来获取中心点的坐标值和修改原点的值
+          get {
+              let centerX = origin.x + (size.width / 2)
+              let centerY = origin.y + (size.height / 2)
+              return Point(x: centerX, y: centerY)
+          }
+          set(newCenter) { // 若不指定变量名为newCenter，默认为newValue
+              origin.x = newCenter.x - (size.width / 2)
+              origin.y = newCenter.y - (size.height / 2)
+          }
+      }
+  }
+  ```
 
-```swift
-struct Point {
-    var x = 0.0, y = 0.0
-}
-struct Size {
-    var width = 0.0, height = 0.0
-}
-struct Rect {
-    var origin = Point()
-    var size = Size()
-    var center: Point { // 通过center来获取中心点的坐标值和修改原点的值
-        get {
-            let centerX = origin.x + (size.width / 2)
-            let centerY = origin.y + (size.height / 2)
-            return Point(x: centerX, y: centerY)
-        }
-        set(newCenter) { // 若不指定变量名为newCenter，默认为newValue
-            origin.x = newCenter.x - (size.width / 2)
-            origin.y = newCenter.y - (size.height / 2)
-        }
-    }
-}
-```
+  若只有`getter`没有`setter`，可以简化为：
 
-若只有`getter`没有`setter`，可以简化为：
+  ```swift
+  var center: Point {
+      let centerX = origin.x + (size.width / 2)
+      let centerY = origin.y + (size.height / 2)
+      return Point(x: centerX, y: centerY)
+  } // 此时center为只读属性
+  ```
 
-```swift
-var center: Point {
-    let centerX = origin.x + (size.width / 2)
-    let centerY = origin.y + (size.height / 2)
-    return Point(x: centerX, y: centerY)
-} // 此时center为只读属性
-```
+  必须使用`var`关键字来定义计算属性，因为它们的值不是固定的。
 
-必须使用`var`关键字来定义计算属性，因为它们的值不是固定的。
 
 - 类型属性
 
-上面讲述了实例属性，每创建一个实例，该实例就拥有自己的一套属性值，相互独立，而类属性则属于类本身，无论创建了多少个实例，这些属性只有唯一一个。
+  上面讲述了实例属性，每创建一个实例，该实例就拥有自己的一套属性值，相互独立，而类属性则属于类本身，无论创建了多少个实例，这些属性只有唯一一个。
 
-存储型类型属性是延迟初始化的，它们只有在第一次被访问的时候才会被初始化。即使它们被多个线程同时访问，系统也保证只会对其进行一次初始化。
+  存储型类型属性是延迟初始化的，它们只有在第一次被访问的时候才会被初始化。即使它们被多个线程同时访问，系统也保证只会对其进行一次初始化。
 
-用`static`或`class`来指定：
+  用`static`或`class`来指定：
 
-结构体`struct`和枚举`enum`，使用`static`来指定类型属性。
+  结构体`struct`和枚举`enum`，使用`static`来指定类型属性。
 
-类可以使用`static`指定，但子类不能重写该属性。使用`class`来指定，子类可以通过添加关键字`override`重写该属性。
+  类可以使用`static`指定，但子类不能重写该属性。使用`class`来指定，子类可以通过添加关键字`override`重写该属性。
 
-```swift
-class Point {
-    var x: Double = 1
-    var y: Double = 1
-    class var z: Double {	// 若此处使用static，MyPoint的重写就不被允许
-        return 1
-    }
-}
-class MyPoint: Point {
-    override class var z: Double {
-        return 2
-    }
-}
-```
+  ```swift
+  class Point {
+      var x: Double = 1
+      var y: Double = 1
+      class var z: Double {	// 若此处使用static，MyPoint的重写就不被允许
+          return 1
+      }
+  }
+  class MyPoint: Point {
+      override class var z: Double {
+          return 2
+      }
+  }
+  ```
 
 ---
 
@@ -1609,4 +1610,38 @@ if object is SomeType {}
   ```
 
   `as!`则是确定向下转型一定会成功时使用的。当你试图向下转型为一个不正确的类型时，强制形式的类型转换会触发一个运行时错误。
+
+---
+
+### 扩展(Extension)
+
+#### Problem
+
+在OC中有分类(category)的概念，在Swift中是否有同样的功能为已有的类或结构体、枚举定义更多的功能？
+
+#### Solution
+
+在Swift中，使用`extension`为一个已有的类、结构体、枚举类型或者协议类型添加新功能。
+
+#### Discussion
+
+使用关键字`extension`来什么扩展：
+
+```Swift
+extension SomeType {
+    // 添加的新内容
+}
+```
+
+Swift 中的扩展可以：
+
+- 添加**计算型属性和计算型类型属性**
+
+- 定义实例方法和类型方法：**值类型**要修改`self`或其属性，必须将该方法标注为`mutating`
+- 提供新的构造器。要注意的是，类的扩展只能定义便利构造器，值类型的构造器可以使用原有的构造器。
+- 定义下标
+- 定义和使用新的嵌套类型
+- 使一个已有类型符合某个协议，类不能在扩展中继承其他类
+
+---
 
