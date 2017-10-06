@@ -1749,5 +1749,103 @@ if object is SomeType {}
 
 ------
 
-### 
+### 泛型
+
+#### Problem
+
+泛型代码让我们可以编写出任意类型、灵活可重用的函数及类型。在Swift中怎么使用泛型？
+
+#### Solution
+
+Swift的泛型可以使用于函数、类型、协议。
+
+#### Discussion
+
+泛型函数的定义如下：
+
+```swift
+func aFunction<T>(param: T) {
+    // 函数的主体部分
+}
+```
+
+类型参数指定并命名一个占位类型，并且紧随在函数名后面，使用一对尖括号括起来（例如上面的`<T>`）
+
+在大多数情况下，类型参数具有一个描述性名字，例如 `Dictionary<Key, Value>` 中的` Key `和 `Value`，以及 `Array<Element>` 中的 `Element`，这可以告诉阅读代码的人这些类型参数和泛型函数之间的关系。
+
+泛型类型是在类型名称后面指定占位类型：
+
+```swift
+struct SomeType<T> {
+    // 使用类型T
+    var item: T
+    func aFunction(param: T) -> T {
+        // 作为函数的参数和返回值类型
+    }
+}
+// 创建实例
+let s = SomeType<Int>()
+```
+
+当你扩展一个泛型类型的时候，你并不需要在扩展的定义中提供类型参数列表。原始类型定义中声明的类型参数列表在扩展中可以直接使用。
+
+```Swift
+extension SomeType {
+    var anotherItem: T {
+        
+    }
+}
+```
+
+可以在泛型函数和泛型类型中的类型添加一个特定的类型约束，做一些我们需要的限制。类型约束可以指定一个类型参数必须继承自指定类，或者符合一个特定的协议或协议组合。
+
+```swift
+func someFunction<T: SomeClass, U: SomeProtocol>(someT: T, someU: U) {
+    // 函数的函数体部分
+}
+```
+
+将重用的思想用于协议，我们有时候也需要为协议定义泛型。但是上述定义方式并不能适用于协议，会导致编译错误。在协议中，我们使用关联类型，关键字`associatedtype`，来指定，代表的实际类型在协议被采纳时才会被指定。
+
+```swift
+protocol Container {
+    associatedtype ItemType
+    mutating func append(item: ItemType)
+    var count: Int { get }
+    subscript(i: Int) -> ItemType { get }
+}
+// 遵循协议时，实现协议要求的功能
+struct IntStack: Container {
+    typealias ItemType = Int // 指定关联类型为Int，实际上，如果删除这一行代码，一切仍可以正常工作，因为Swift的类型推断能力，由实现的函数可以推断出来。
+    mutating func append(item: Int) {
+        self.push(item)
+    }
+    var count: Int {
+        return items.count
+    }
+    subscript(i: Int) -> Int {
+        return items[i]
+    }
+}
+```
+
+有了关联类型，我们的泛型函数可以通过`where`来添加强制约束：
+
+```Swift
+func allItemsMatch<C1: Container, C2: Container>
+    (_ someContainer: C1, _ anotherContainer: C2) -> Bool
+    where C1.ItemType == C2.ItemType, C1.ItemType: Equatable {
+    // 函数主体部分
+}
+```
+
+还记得我们说`extension`的时候提到，扩展可以限制满足某些条件时才提供协议的默认实现，也是通过`where`子句来声明，关联类型也可以用作`where`中的判断条件：
+
+```swift
+extension Container where ItemType: Equatable {
+    // 当ItemType遵循Equatable时提供默认实现
+}
+```
+
+---
 
