@@ -1530,89 +1530,6 @@ lazy var someClosure: Void -> String = {
 
 ---
 
-### 类型转换
-
-#### Problem
-
-在Swift中如何使用类型转换？
-
-#### Solution
-
-类型转换在 Swift 中使用 `is` 和 `as` 操作符实现。这两个操作符提供了一种简单达意的方式去检查值的类型或者转换它的类型。
-
-#### Discussion
-
-`is`比较简单，是用来判断某个实例的类型是否是我们预期中的类型。若实例属于那个类型，类型检查操作符返回` true`，否则返回 `false`。
-
-```Swift
-if object is SomeType {}
-```
-
-`as`相对来说比较复杂，其中涉及到向上转型和向下转型：
-
-- 向上转型：子类转成父类，用`as`
-
-  ```Swift
-  // 例子定义了父类Animal和子类Cat，由子类转成父类
-  class Animal {}
-  class Cat: Animal{}
-  let cat = Cat()
-  let animal = cat as Animal
-  ```
-
-
-- `as`还可以用在`switch`表达式的`case`中用来找出只知道是`Any`或`AnyObject`类型的常量或变量的具体类型
-
-  - `AnyObject`可以表示任何类类型。
-
-    ```Swift
-    @objc protocol AnyObject {}
-    ```
-
-  - `Any` 可以表示任何类型，包括函数类型。
-
-    ```Swift
-    typealias Any = protocol<>
-    ```
-
-  ```Swift
-  var things = [Any]()
-  things.append(0)
-  things.append(0.0)
-  things.append("hello")
-  for thing in things {
-      switch thing {
-      case 0 as Int:
-          print("Int 0")
-      case 0 as Double:
-          print("Double 0")
-      case is String:
-          print("is a string")
-      default:
-          break
-      }
-  }
-  ```
-
-
-- 向下转型：父类转成子类，用`as?`和`as!`
-
-  当你不确定向下转型可以成功时，用`as?`。总是返回一个可选值，并且向下转型如果是不可能的，则返回`nil`。
-
-  ```swift
-  class Dog: Animal{}
-  let zoo: [Animal] = [Cat(), Dog()]
-  for animal in zoo { // animal是Animal类型
-      if let cat = animal as? Cat {
-          print("mew~🐱")
-      }
-  }
-  ```
-
-  `as!`则是确定向下转型一定会成功时使用的。当你试图向下转型为一个不正确的类型时，强制形式的类型转换会触发一个运行时错误。
-
----
-
 ### 扩展(Extension)
 
 #### Problem
@@ -1644,4 +1561,193 @@ Swift 中的扩展可以：
 - 使一个已有类型符合某个协议，类不能在扩展中继承其他类
 
 ---
+
+### 协议
+
+#### Problem
+
+Swift中协议怎么定义？有什么需要注意的地方？
+
+#### Solution
+
+Swift中使用协议（Protocol），协议的定义和类、结构体、枚举的定义非常相似：
+
+```Swift
+// 下面的代码中:[]表示可选
+protocol SomeProtocol: FirstProtocol[, AnotherProtocol] {
+    // 这里是协议的定义部分
+    [static] var property: Type{set get} // 定义属性，static值类型属性(可选)，{set get}用来指明该属性是够可读写
+    [static] [mutating] func someTypeMethod() // mutating表示可以在该方法中修改它所属的实例以及实例的任意属性的值
+    init(someParamter: Int) // 若在遵循协议的类中实现构造器，都必须在构造器实现标上 required 修饰符，如果类已被标记为 final ，则不需要
+    init?()
+}
+```
+
+#### Discussion
+
+协议的定义不复杂，本身并未实现任何功能，但是协议可以被当做一个成熟的类型来使用。协议可以像其他普通类型一样使用，使用场景如下：
+
+- 作为函数、方法或构造器中的参数类型或返回值类型
+
+  协议作为参数时，可以使用`&`来将两个协议合成到一个只在局部作用域有限的临时协议中。
+
+  ```swift
+  protocol Named {
+      var name: String { get }
+  }
+  protocol Aged {
+      var age: Int { get }
+  }
+  func wishHappyBirthday(to someone: Named & Aged) {
+      // 使用someone遵循的协议中的name和age
+  }
+  struct Person: Named, Aged {
+      var name: String
+      var age: Int
+  }
+  wishHappyBirthday(to: Person(name:"Chris", age:23))
+  ```
+
+- 作为常量、变量或属性的类型
+
+- 作为数组、字典或其他容器中的元素类型
+
+我们可以在协议的继承列表中，通过添加`class`关键字来限制协议只能被类类型遵循，而结构体或枚举不能遵循该协议。`class` 关键字必须第一个出现在协议的继承列表中，在其他继承的协议之前：
+
+```swift
+protocol SomeClassOnlyProtocol: class, OtherProtocol {
+    // 这里是类类型专属协议的定义部分
+}
+```
+
+协议可以定义可选要求，遵循协议的类型可以选择是否实现这些要求。在协议中使用` optional` 关键字作为前缀来定义可选要求。协议和可选要求都必须带上`@objc`属性。标记 `@objc` 特性的协议只能被继承自 OC 类的类或者 `@objc` 类遵循，其他类以及结构体和枚举均不能遵循这种协议。使用可选要求时（例如，可选的方法或者属性），它们的类型会自动变成可选的。
+
+```swift
+@objc protocol CounterDataSource {
+    // optional方法和属性会自动变成可选类型
+    optional func incrementForCount(count: Int) -> Int
+    optional var fixedIncrement: Int { get }
+}
+```
+
+协议使用扩展可以为要求的属性、方法、下标提供默认实现：
+
+```swift
+extension Named {
+    var name: String {
+        return "[NoNameYet]"
+    }
+}
+```
+
+在扩展协议的时候，可以指定一些限制条件，只有遵循协议的类型满足这些限制条件时，才能获得协议扩展提供的默认实现。使用`where`来描述：
+
+```swift
+protocol Empty {
+    
+}
+protocol Named {
+    var name: String{get}
+}
+// where语句指：遵循Named的结构也遵循Empty时，提供name属性的默认实现。
+extension Named where Self: Empty {
+    var name: String {
+        return "[NoNameYet]"
+    }
+}
+struct Unknown: Named, Empty {
+    
+}
+let u = Unknown()
+u.name // [NoNameYet]
+```
+
+> 如果多个协议扩展都为同一个协议要求提供了默认实现，而遵循协议的类型又同时满足这些协议扩展的限制条件，那么将会使用限制条件最多的那个协议扩展提供的默认实现。
+
+---
+
+### 类型转换
+
+#### Problem
+
+在Swift中如何使用类型转换？怎么判断实例是够属于哪个类或是否符合某个协议？
+
+#### Solution
+
+类型转换在 Swift 中使用 `is` 和 `as` 操作符实现。这两个操作符提供了一种简单达意的方式去检查值的类型或者转换它的类型。
+
+#### Discussion
+
+`is`比较简单，是用来判断某个实例的类型是否是我们预期中的类型或检查实例是否符合某个协议。若实例属于那个类型，类型检查操作符返回` true`，否则返回 `false`。
+
+```Swift
+if object is SomeType {}
+```
+
+`as`相对来说比较复杂，其中涉及到向上转型和向下转型：
+
+- 向上转型：子类转成父类，用`as`。
+
+  ```Swift
+  // 例子定义了父类Animal和子类Cat，由子类转成父类
+  class Animal {}
+  class Cat: Animal{}
+  let cat = Cat()
+  let animal = cat as Animal
+  ```
+
+
+- `as`还可以用在`switch`表达式的`case`中用来找出只知道是`Any`或`AnyObject`类型的常量或变量的具体类型。
+
+  - `AnyObject`可以表示任何类类型。
+
+    ```swift
+    @objc protocol AnyObject {}
+    ```
+
+  - `Any` 可以表示任何类型，包括函数类型。
+
+    ```swift
+    typealias Any = protocol<>
+    ```
+
+  ```Swift
+  var things = [Any]()
+  things.append(0)
+  things.append(0.0)
+  things.append("hello")
+  for thing in things {
+      switch thing {
+      case 0 as Int:
+          print("Int 0")
+      case 0 as Double:
+          print("Double 0")
+      case is String:
+          print("is a string")
+      default:
+          break
+      }
+  }
+  ```
+
+
+- 向下转型：父类转成子类，或将实例向下转换成某个协议类型，用`as?`和`as!`。
+
+  当你不确定向下转型可以成功时，用`as?`。总是返回一个可选值，并且向下转型如果是不可能的，则返回`nil`。
+
+  ```swift
+  class Dog: Animal{}
+  let zoo: [Animal] = [Cat(), Dog()]
+  for animal in zoo { // animal是Animal类型
+      if let cat = animal as? Cat {
+          print("meow~🐱")
+      }
+  }
+  ```
+
+  `as!`则是确定向下转型一定会成功时使用的。当你试图向下转型为一个不正确的类型时，强制形式的类型转换会触发一个运行时错误。
+
+------
+
+### 
 
