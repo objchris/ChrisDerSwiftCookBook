@@ -2,11 +2,11 @@
 
 以Cookbook的形式书写，带🥐标志的作为Xcode代码段方便开发使用。
 
-13515 Words, 32185 Character, may need 50 Minutes to very fast read.
+It may need 60 Minutes to very very fast read.
 
 So, cut the crap. Let's go for it. ヾ(o◕∀◕)ﾉヾ
 
-[TOC]
+
 
 ## 基本数据类型
 
