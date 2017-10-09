@@ -244,6 +244,64 @@ if condition1 && condition2 || condition3 || condition4 {
 
 所以，多个逻辑运算符组合起来使用，最好使用括号来明确优先级。
 
+---
+
+### 位运算符
+
+#### Problem
+
+在Swift中怎么进行位运算？
+
+#### Solution
+
+Swift和其他语言一般，都是使用`&`、`|`、`~`、`^`、`<<`、`>>`来实现位运算，而且对于溢出，Swift也有处理方式，那就是`&+`、`&-`、`&*`溢出运算符。
+
+#### Discussion
+
+`&`、`|`、`~`、`^`不需要太多的说明，分别对应按位与、按位或、按位取反和按位异或。
+
+按位左移运算符`<<`和按位右移运算符`>>`可以对一个数的所有位进行指定位数的左移和右移。
+
+对于无符号整数的移位运算，规则如下：
+
+- 已经存在的位按指定的位数进行左移和右移。
+- 任何因移动而超出整型存储范围的位都会被丢弃。
+- 用` 0 `来填充移位后产生的空白位。**左移相当于该数乘2，右移相当于该数除以2**
+
+而有符号整数的移位运算，前两条规则同上：
+
+- 右移运算时，产生的空白位使用符号位填充，左移运算时，产生的空白位用`0`填充。**在移位过程中，有可能从负数变成正数，也有可能从正数变成负数，即左移乘2，右移除以2不再适用**
+
+我们知道，每种数值类型都有取值范围，例如，当向一个整数赋予超过它范围的值时，Swift默认会报错。可以使用Swift提供的三个溢出运算符`&+`、`&-`、`&*`来让系统支持移除运算：
+
+```swift
+// 无符号数：
+var unsignedOverflow = UInt8.max
+// unsignedOverflow 等于 UInt8 所能容纳的最大整数 255
+unsignedOverflow = unsignedOverflow &+ 1
+// 此时 unsignedOverflow 等于 0
+unsignedOverflow = unsignedOverflow &- 1
+// 此时 unsignedOverflow 变回255
+
+// 而有符号数则是：
+var signedOverflow = Int8.min
+// signedOverflow 等于 Int8 所能容纳的最小整数 -128
+signedOverflow = signedOverflow &- 1
+// 此时 signedOverflow 等于 127
+
+// 可以清楚看到，使用溢出运算符来计算，当溢出时，会继续计算并舍弃掉最高位，相当于将运算结果对最大数做一次取余的运算
+```
+
+---
+
+运算符函数
+
+Problem
+
+Solution
+
+Discussion
+
 ------
 
 ### 函数(Function)
@@ -537,7 +595,7 @@ if pointsSet.contains(GridPoint(x: 1,y: 1)) {
 
 #### Solution
 
-![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/setVennDiagram_2x.png)
+![20171009150752468214216.png](http://7xs4ed.com1.z0.glb.clouddn.com/20171009150752468214216.png)
 
 #### Discussion
 
@@ -569,7 +627,7 @@ oddDigits. symmetricDifference(singleDigitPrimeNumbers).sorted()
 
 #### Solution
 
-![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/setEulerDiagram_2x.png)
+![20171009150752471775254.png](http://7xs4ed.com1.z0.glb.clouddn.com/20171009150752471775254.png)
 
 ```swift
 b.isSubset(of:a)	//true
