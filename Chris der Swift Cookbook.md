@@ -294,13 +294,63 @@ signedOverflow = signedOverflow &- 1
 
 ---
 
-运算符函数
+### 运算符函数
 
-Problem
+#### Problem
 
-Solution
+在Swift中怎么重载现有运算符，怎么添加自定义的运算符？
 
-Discussion
+#### Solution
+
+重载现有运算符的格式跟普通的函数一样，但是要作为静态方法来定义。自定义运算符需要在全局作用域内定义，同时要指定前中后缀的修饰符。
+
+#### Discussion
+
+以重载`+`为例子：
+
+```swift
+struct Vector2D {
+    var x = 0.0, y = 0.0
+    static func + (left: Vector2D, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left.x + right.x, y: left.y + right.y)
+    }
+}
+```
+
+要实现前缀或后缀运算符，需要在声明运算符函数的时候再`func`关键字之前指定`prefix`或`postfix`修饰符，例如：负数符号
+
+```swift
+static prefix func - (vector: Vector2D) -> Vector2D {
+    return Vector2D(x: -vector.x, y: -vector.y)
+}
+```
+
+复合赋值运算符`+=`、`-=`等，在实现的时候，需要把运算符的左参数设置成 `inout` 类型。
+
+```swift
+static func += (left: inout Vector2D, right: Vector2D) {
+    left = left + right
+}
+```
+
+除了重载运算符，我们还可以声明和实现自定义运算符。使用`operatpr`关键字在全局作用域进行定义，还要指定`prefix`、`infix`、`postfix`：
+
+```swift
+prefix operatpr +++ {} // 全局声明
+extension Vector2D {
+  	// 为特定的类型定义
+    static prefix func +++ (vector: inout Vector2D) -> Vector2D {
+        vector += vector
+        return vector
+    }
+}
+```
+
+原有的运算符号有运算优先级，是通过优先级组来指定的，自定义运算符也可以通过优先级组来指定，没有明确放入优先级组的自定义中缀运算符会放到一个默认的优先级组内，其优先级高于三元运算符：
+
+Swift中有如下这些优先组：
+
+
 
 ------
 
