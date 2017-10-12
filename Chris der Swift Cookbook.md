@@ -608,7 +608,7 @@ struct GridPoint {
 // 若要在Set中保存，或需要作为Dictionary的Key
 extension GridPoint: Hashable {
     var hashValue: Int {
-        return x.hashValue ^ y.hashValue &* 16777619
+        return x.hashValue ^ y.hashValue
     }
 
     static func == (lhs: GridPoint, rhs: GridPoint) -> Bool
@@ -747,9 +747,43 @@ if let result = dic3[1]	{	// 要注意： result 是 String?
 
 #### Problem
 
+字典的键和集合都是哈希表，存放在里面的数据类型都需要遵守`Hashable`协议，那么产生hash需要注意什么？
+
 #### Solution
 
+
+
 #### Discussion
+
+标准库中所有的基本数据类型都是遵守`Hashable`协议的，它们包括字符串、整数、浮点数和布尔值。不带关联值的枚举类型也会自动遵守`Hashable`。
+
+但是在日常开发过程中，我们难免需要让自定义类型遵守`Hashable`协议，实现中我们需要保证哈希不变原则：**两个同样的实例，必须拥有相同的哈希值。反过来不一定为真。**这就意味着可能存在两个不同的实例，却拥有相同的哈希值，我们称之为哈希碰撞。这就要求字典和集合必须能够处理哈希碰撞。
+
+优秀的哈希算法总是能给出较少的碰撞，保持集合的性能特性。
+
+在极端的例子下，如果你的实现对所有实例返回相同的哈希值 (比如 0)，那么这个字典的查找性能将下降到 O(n)。
+
+优秀哈希算法的第二个特质是计算快，否则在字典和集合插入、查询、删除的时候会耗费太多的时间。
+
+对于一些由本身就是 Hashable 的数据类型组成的类型来说，将成员的哈希值进行“异或” `XOR` 运算就很不错：
+
+```swift
+// 此例子在Set中已经提到过
+struct GridPoint {
+    var x: Int
+    var y: Int
+}
+extension GridPoint: Hashable {
+    var hashValue: Int {
+        return x.hashValue ^ y.hashValue &* 16777619
+    }
+    static func == (lhs: GridPoint, rhs: GridPoint) -> Bool
+        return lhs.x == rhs.x && lhs.y == rhs.y
+    }
+}
+```
+
+但是这样有一个问题，就是很容易发生碰撞。
 
 ## Swift特性
 
