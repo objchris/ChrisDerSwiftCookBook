@@ -591,7 +591,7 @@ Swift中如何表示一个集合？有什么特性？
 
 #### Discussion
 
-集合是通过Hash来确定一个值当前是否存储在其中。所以为了存储在集合中，该类型必须遵循`Hashable`协议。`Hashable`是一个`Protocal`，其中只有一个计算属性`hashValue`，用于返回计算后的哈希值。要选择一个对类型中包含的属性来说较为合适的哈希算法。见  [**如何选取好的Hash算法**](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#如何选取好的hash算法)
+集合是通过Hash来确定一个值当前是否存储在其中。所以为了存储在集合中，该类型必须遵循`Hashable`协议。`Hashable`是一个`Protocal`，其中只有一个计算属性`hashValue`，用于返回计算后的哈希值。要选择一个对类型中包含的属性来说较为合适的哈希算法。见  [**如何较好地计算哈希**](https://github.com/objchris/ChrisDerSwiftCookBook/blob/master/Chris%20der%20Swift%20Cookbook.md#如何较好地计算哈希)
 
 再者`Hashable`是符合`Equatable`协议的。所以必须重写`==`来告诉`Set`（或下面将提到的`Dictionary`），如何判断两个元素是相同的。
 
@@ -743,15 +743,15 @@ if let result = dic3[1]	{	// 要注意： result 是 String?
 
 ------
 
-### 如何选取好的Hash算法
+### 如何较好地计算哈希
 
 #### Problem
 
-字典的键和集合都是哈希表，存放在里面的数据类型都需要遵守`Hashable`协议，那么产生hash需要注意什么？
+字典的键和集合都是哈希表，存放在里面的数据类型都需要遵守`Hashable`协议，那么计算哈希需要注意什么？
 
 #### Solution
 
-
+计算哈希在Swift中并不难，返回类型对应的hashValue就可以得到，但是如何将各个属性的哈希值组合起来，是一个难题。将哈希值组合起来并没有唯一的答案，但是要注意，所做的操作要在“结果出现较少碰撞”和“哈希计算速度”之间做一个权衡。
 
 #### Discussion
 
@@ -775,7 +775,7 @@ struct GridPoint {
 }
 extension GridPoint: Hashable {
     var hashValue: Int {
-        return x.hashValue ^ y.hashValue &* 16777619
+        return x.hashValue ^ y.hashValue
     }
     static func == (lhs: GridPoint, rhs: GridPoint) -> Bool
         return lhs.x == rhs.x && lhs.y == rhs.y
@@ -783,7 +783,23 @@ extension GridPoint: Hashable {
 }
 ```
 
-但是这样有一个问题，就是很容易发生碰撞。
+但是这样有一个问题，就是很容易发生碰撞，因为这种简单的`xor`操作是对称的，例如：`Grid(x: 1, y: 2)`和`Grid(x: 2, y: 1)`，它们两者的hash就是相同的。
+
+解决这个问题有一个还不错的计算方式，就是[位旋转](https://www.mikeash.com/pyblog/friday-qa-2010-06-18-implementing-equality-and-hashing.html)，将`Int`类型（Swift中`hashValue`属性的类型是`Int`，所以这里只探讨`Int`）在某个比特位切断，高低位互换的哈希转变方式：
+
+```swift
+func rotateBitsOfInt(_ val: Int, at index: Int) -> Int {
+    return (val << index) | (val >> (MemoryLayout<Int>.stride * 8 - index))
+}
+```
+
+那么，上面的`GridPoint`的`hashValue`计算属性的返回值我们可以这样写：
+
+```swift
+var hashValue: Int {
+    return rotateBitsOfInt(x.hashValue, at: 10) ^ y.hashValue
+}
+```
 
 ## Swift特性
 
